@@ -1,0 +1,5 @@
+Julien Dutheil <julien.dutheil@univ-montp2.fr>
+
+Contributed code to Bio++ was enabled thanks to the following institutions and resources:
+
+2010 -      ISE-M UMR CNRS 5554 Université Montpellier 2 (Julien Dutheil)

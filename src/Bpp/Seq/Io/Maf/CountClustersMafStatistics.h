@@ -37,6 +37,9 @@ The fact that you are presently reading this means that you have had
 knowledge of the CeCILL license and that you accept its terms.
 */
 
+#ifndef _COUNTCLUSTERSMAFSTATISTICS_H_
+#define _COUNTCLUSTERSMAFSTATISTICS_H_
+
 #include <Bpp/Seq/Io/Maf/MafStatistics.h>
 
 //From bpp-phyl:
@@ -80,3 +83,4 @@ class CountClustersMafStatistics:
 
 } //end of namespace bpp.
 
+#endif //_COUNTCLUSTERSMAFSTATISTICS_H_

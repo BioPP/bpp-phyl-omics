@@ -1344,8 +1344,8 @@ SKIP_FUNCTION_MACROS   = YES
 
 TAGFILES               = ../bpp-core/BppCore.tag=../../bpp-core/html/ \
                          ../bpp-seq/BppSeq.tag=../../bpp-seq/html/ \
-                         ../bpp-seq/BppSeq.tag=../../bpp-phyl/html/ \
-                         ../bpp-seq/BppSeq.tag=../../bpp-seq-omics/html/
+                         ../bpp-phyl/BppPhyl.tag=../../bpp-phyl/html/ \
+                         ../bpp-seq-omics/BppSeqOmics.tag=../../bpp-seq-omics/html/
 
 # When a file name is specified after GENERATE_TAGFILE, doxygen will create
 # a tag file that is based on the input files it reads.

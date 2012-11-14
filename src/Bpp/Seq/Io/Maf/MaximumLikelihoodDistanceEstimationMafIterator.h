@@ -51,8 +51,9 @@ class MaximumLikelihoodDistanceEstimationMafIterator:
   public AbstractDistanceEstimationMafIterator
 {
   private:
-    std::string gapOption_;
-    bool unresolvedAsGap_;
+    auto_ptr<DistanceEstimation> distEst_;
+    double propGapsToKeep_; //Exclude sites with too many gaps
+    bool gapsAsUnresolved_;  //For most models, should be yes as they do not allow for gap characters
 
   public:
     /**
@@ -60,13 +61,27 @@ class MaximumLikelihoodDistanceEstimationMafIterator:
      *
      * @see DistanceEstimation
      * @param gapOption How to deal with gaps. Option forawarded to the computeSimilarityMatrix method.
-     * @param unresolvedAsGap Tell if unresolved characters should be considered as gaps. Option forawarded to the computeSimilarityMatrix method.
+     * @param gapsAsUnresolved Tell if gap characters should be considered as unresolved states. In ost cases it should be set to true, as very few substitution models consider gaps as genuine states.
      */
-    MaximumLikelihoodDistanceEstimationMafIterator(MafIterator* iterator, const std::string& gapOption, bool unresolvedAsGap):
+    MaximumLikelihoodDistanceEstimationMafIterator(MafIterator* iterator, DistanceEstimation* distEst, double propGapsToKeep = 0, bool gapsAsUnresolved = true):
       AbstractDistanceEstimationMafIterator(iterator),
-      gapOption_(gapOption), unresolvedAsGap_(unresolvedAsGap)
+      distEst_(distEst), propGapsToKeep_(propGapsToKeep), gapsAsUnresolved_(gapsAsUnresolved)
+    {}
+
+  private:
+    MaximumLikelihoodDistanceEstimationMafIterator(const MaximumLikelihoodDistanceEstimationMafIterator& iterator):
+      AbstractDistanceEstimationMafIterator(0),
+      distEst_(0), propGapsToKeep_(iterator.propGapsToKeep_), gapsAsUnresolved_(iterator.gapsAsUnresolved_)
     {}
     
+    MaximumLikelihoodDistanceEstimationMafIterator& operator=(const MaximumLikelihoodDistanceEstimationMafIterator& iterator)
+    {
+      distEst_.reset();
+      propGapsToKeep_ = iterator.propGapsToKeep_;
+      gapsAsUnresolved_ = iterator.gapsAsUnresolved_;
+      return *this;
+    }
+      
   public:
     std::string getPropertyName() const { return "MLDistance"; }
     DistanceMatrix* estimateDistanceMatrixForBlock(const MafBlock& block);

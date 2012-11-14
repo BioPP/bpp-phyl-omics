@@ -53,8 +53,7 @@ DistanceMatrix* MaximumLikelihoodDistanceEstimationMafIterator::estimateDistance
 
   //Set the data and fit the matrix:
   distEst_->setData(sites.get());
-  distEst_->computeMatrix();
-  auto_ptr<DistanceMatrix> mat(distEst_->getMatrix());
+  auto_ptr<DistanceMatrix> mat(OptimizationTools::estimateDistanceMatrix(*distEst_, ParameterList(), paramOpt_, verbose_));
   return mat.get();
 }
 

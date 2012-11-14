@@ -42,6 +42,9 @@ knowledge of the CeCILL license and that you accept its terms.
 
 #include "AbstractDistanceEstimationMafIterator.h"
 
+//From bpp-phyl:
+#include <Bpp/Phyl/OptimizationTools.h>
+
 namespace bpp {
 
 /**
@@ -54,6 +57,7 @@ class MaximumLikelihoodDistanceEstimationMafIterator:
     auto_ptr<DistanceEstimation> distEst_;
     double propGapsToKeep_; //Exclude sites with too many gaps
     bool gapsAsUnresolved_;  //For most models, should be yes as they do not allow for gap characters
+    std::string paramOpt_;
 
   public:
     /**
@@ -62,16 +66,22 @@ class MaximumLikelihoodDistanceEstimationMafIterator:
      * @see DistanceEstimation
      * @param gapOption How to deal with gaps. Option forawarded to the computeSimilarityMatrix method.
      * @param gapsAsUnresolved Tell if gap characters should be considered as unresolved states. In ost cases it should be set to true, as very few substitution models consider gaps as genuine states.
+     * @param paramOpt Tell if substitution model parameters should be optimized in a pairwise manner or not. See OptimizationTools::estimateDistanceMatrix for more details.
      */
-    MaximumLikelihoodDistanceEstimationMafIterator(MafIterator* iterator, DistanceEstimation* distEst, double propGapsToKeep = 0, bool gapsAsUnresolved = true):
+    MaximumLikelihoodDistanceEstimationMafIterator(MafIterator* iterator,
+        DistanceEstimation* distEst,
+        double propGapsToKeep = 0,
+        bool gapsAsUnresolved = true,
+        const string& paramOpt = OptimizationTools::DISTANCEMETHOD_INIT):
       AbstractDistanceEstimationMafIterator(iterator),
-      distEst_(distEst), propGapsToKeep_(propGapsToKeep), gapsAsUnresolved_(gapsAsUnresolved)
+      distEst_(distEst), propGapsToKeep_(propGapsToKeep), gapsAsUnresolved_(gapsAsUnresolved), paramOpt_(paramOpt)
     {}
 
   private:
     MaximumLikelihoodDistanceEstimationMafIterator(const MaximumLikelihoodDistanceEstimationMafIterator& iterator):
       AbstractDistanceEstimationMafIterator(0),
-      distEst_(0), propGapsToKeep_(iterator.propGapsToKeep_), gapsAsUnresolved_(iterator.gapsAsUnresolved_)
+      distEst_(0), propGapsToKeep_(iterator.propGapsToKeep_),
+      gapsAsUnresolved_(iterator.gapsAsUnresolved_), paramOpt_(iterator.paramOpt_)
     {}
     
     MaximumLikelihoodDistanceEstimationMafIterator& operator=(const MaximumLikelihoodDistanceEstimationMafIterator& iterator)
@@ -79,6 +89,7 @@ class MaximumLikelihoodDistanceEstimationMafIterator:
       distEst_.reset();
       propGapsToKeep_ = iterator.propGapsToKeep_;
       gapsAsUnresolved_ = iterator.gapsAsUnresolved_;
+      paramOpt_ = iterator.paramOpt_;
       return *this;
     }
       

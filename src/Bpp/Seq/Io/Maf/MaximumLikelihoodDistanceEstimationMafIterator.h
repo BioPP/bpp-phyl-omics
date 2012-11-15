@@ -72,10 +72,14 @@ class MaximumLikelihoodDistanceEstimationMafIterator:
         DistanceEstimation* distEst,
         double propGapsToKeep = 0,
         bool gapsAsUnresolved = true,
-        const string& paramOpt = OptimizationTools::DISTANCEMETHOD_INIT):
+        const string& paramOpt = OptimizationTools::DISTANCEMETHOD_INIT,
+        bool verbose = true):
       AbstractDistanceEstimationMafIterator(iterator),
       distEst_(distEst), propGapsToKeep_(propGapsToKeep), gapsAsUnresolved_(gapsAsUnresolved), paramOpt_(paramOpt)
-    {}
+    {
+      setVerbose(verbose);
+      distEst_->setVerbose(verbose ? 1 : 0);
+    }
 
   private:
     MaximumLikelihoodDistanceEstimationMafIterator(const MaximumLikelihoodDistanceEstimationMafIterator& iterator):

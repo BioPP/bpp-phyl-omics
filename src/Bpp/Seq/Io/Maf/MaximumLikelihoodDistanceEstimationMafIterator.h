@@ -78,7 +78,7 @@ class MaximumLikelihoodDistanceEstimationMafIterator:
       distEst_(distEst), propGapsToKeep_(propGapsToKeep), gapsAsUnresolved_(gapsAsUnresolved), paramOpt_(paramOpt)
     {
       setVerbose(verbose);
-      distEst_->setVerbose(verbose ? 1 : 0);
+      distEst_->setVerbose(verbose ? 3 : 0);
     }
 
   private:

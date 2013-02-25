@@ -64,9 +64,12 @@ class MaximumLikelihoodDistanceEstimationMafIterator:
      * @brief Build a new distance estimation maf iterator, based on the DistanceEstimation class.
      *
      * @see DistanceEstimation
-     * @param gapOption How to deal with gaps. Option forawarded to the computeSimilarityMatrix method.
+     * @param iterator The input iterator.
+     * @param distEst A DistanceEstimation object, initialized with an appropriate substitution model.
+     * @param propGapsToKeep The maximum gapfrequency in a site to include it in the analysis. 
      * @param gapsAsUnresolved Tell if gap characters should be considered as unresolved states. In ost cases it should be set to true, as very few substitution models consider gaps as genuine states.
      * @param paramOpt Tell if substitution model parameters should be optimized in a pairwise manner or not. See OptimizationTools::estimateDistanceMatrix for more details.
+     * @param verbose Tell if some information should be output in the default message stream.
      */
     MaximumLikelihoodDistanceEstimationMafIterator(MafIterator* iterator,
         DistanceEstimation* distEst,

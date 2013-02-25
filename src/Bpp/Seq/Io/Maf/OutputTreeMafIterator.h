@@ -46,6 +46,16 @@ knowledge of the CeCILL license and that you accept its terms.
 #include <Bpp/Phyl/Tree.h>
 #include <Bpp/Phyl/Io/Newick.h>
 
+/**
+ * @mainpage
+ *
+ * @par
+ * The bpp-phyl-omics library contains 'omics' phylogenetic tools and classes.
+ *
+ * As for Bio++ version 2.1.0, these consist of bpp::MafIterator classes allowing to reconstruct phylogenies from a genome alignment.
+ * More tools are expected to developped in the incoming versions.
+ */
+
 namespace bpp {
 
 /**

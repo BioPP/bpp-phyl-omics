@@ -59,6 +59,7 @@ class CountDistanceEstimationMafIterator:
      * @brief Build a new distance estimation maf iterator, based on the SiteContainerTools::computeSimilarityMatrix method.
      *
      * @see SiteContainerTools
+     * @param iterator The input iterator.
      * @param gapOption How to deal with gaps. Option forawarded to the computeSimilarityMatrix method.
      * @param unresolvedAsGap Tell if unresolved characters should be considered as gaps. Option forawarded to the computeSimilarityMatrix method.
      */

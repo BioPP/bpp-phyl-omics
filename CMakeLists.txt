@@ -1,4 +1,4 @@
-# CMake script for Bio++ Phylogen-Omics library
+# CMake script for Bio++ Phylo(gen)-Omics library
 # Author: Sylvain Gaillard and Julien Dutheil
 # Created: 30/07/2012
 
@@ -108,10 +108,10 @@ ENDIF(NO_DEP_CHECK)
 # Packager
 SET(CPACK_PACKAGE_NAME "libbpp-phyl-omics")
 SET(CPACK_PACKAGE_VENDOR "Bio++ Development Team")
-SET(CPACK_PACKAGE_VERSION "2.0.3")
+SET(CPACK_PACKAGE_VERSION "2.1.0")
 SET(CPACK_PACKAGE_VERSION_MAJOR "2")
-SET(CPACK_PACKAGE_VERSION_MINOR "0")
-SET(CPACK_PACKAGE_VERSION_PATCH "3")
+SET(CPACK_PACKAGE_VERSION_MINOR "1")
+SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "The Bio++ Phylogen-Omics library")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/COPYING.txt")
 SET(CPACK_RESOURCE_FILE_AUTHORS "${CMAKE_SOURCE_DIR}/AUTHORS.txt")
@@ -157,6 +157,14 @@ INCLUDE(CPack)
 
 #This adds the 'dist' target
 ADD_CUSTOM_TARGET(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
+# 'clean' is not (yet) a first class target. However, we need to clean the directories before building the sources:
+IF("${CMAKE_GENERATOR}" MATCHES "Make")
+  ADD_CUSTOM_TARGET(make_clean
+  COMMAND ${CMAKE_MAKE_PROGRAM} clean
+  WORKING_DIRECTORY ${CMAKE_CURRENT_DIR}
+  )
+  ADD_DEPENDENCIES(dist make_clean)
+ENDIF()
 
 IF(NOT NO_DEP_CHECK)
 IF (UNIX)

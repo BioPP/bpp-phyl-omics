@@ -1,0 +1,12 @@
+libbpp-seq-omics (2.1.0-1) unstable; urgency=low
+
+  * Contain tools to apply phylogenetic method along a genome alignment. Only distance methods are implemented for now.
+
+ -- Julien Dutheil <julien.dutheil@univ-montp2.fr>  Wed, 06 Mar 2013 14:34:00 +0100
+
+libbpp-phyl-omics (2.0.3-1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Julien Dutheil <julien.dutheil@univ-montp2.fr>  Tue, 06 Nov 2012 14:05:00 +0100
+

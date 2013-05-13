@@ -1,4 +1,4 @@
-libbpp-seq-omics (2.1.0-1) unstable; urgency=low
+libbpp-phyl-omics (2.1.0-1) unstable; urgency=low
 
   * Contain tools to apply phylogenetic method along a genome alignment. Only distance methods are implemented for now.
 

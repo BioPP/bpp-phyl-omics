@@ -4,14 +4,14 @@ Priority: optional
 Maintainer: Loic Dachary <loic@dachary.org>
 Uploaders: Julien Dutheil <julien.dutheil@univ-montp2.fr>
 Build-Depends: debhelper (>= 5), cmake (>= 2.6),
-  libbpp-phyl-dev (>= 2.1.0)
+  libbpp-phyl-dev (>= 2.1.0), libbpp-seq-omics-dev (>= 2.1.0)
 Standards-Version: 3.9.1
 
 Package: libbpp-phyl-omics-dev
 Section: libdevel
 Architecture: any
 Depends: libbpp-phyl-omics1 (= ${binary:Version}), ${misc:Depends},
-  libbpp-phyl-dev (>= 2.1.0)
+  libbpp-phyl-dev (>= 2.1.0), libbpp-seq-omics-dev (>= 2.1.0)
 Description: Bio++ Phylogenetics library: genomics components.
  Contains the Bio++ sequence classes dedicated to phylogenomics.
 
@@ -19,7 +19,7 @@ Package: libbpp-phyl-omics1
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends},
-  libbpp-phyl9 (>= 2.1.0)
+  libbpp-phyl9 (>= 2.1.0), libbpp-seq-omics1 (>= 2.1.0)
 Description: Bio++ Phylogenetics library: genomics components.
  Contains the Bio++ sequence classes dedicated to phylogenomics.
 

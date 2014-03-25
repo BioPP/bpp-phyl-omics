@@ -99,10 +99,6 @@ IF (DOXYGEN_FOUND)
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 ENDIF (DOXYGEN_FOUND)
 
-# Python, needed for install:
-FIND_PACKAGE(PythonInterp)
-FIND_PACKAGE(PythonLibs)
-
 ENDIF(NO_DEP_CHECK)
 
 # Packager

@@ -69,8 +69,8 @@ class AbstractDistanceEstimationMafIterator:
     {
       MafBlock* block = iterator_->nextBlock();
       if (!block) return 0;
-      DistanceMatrix* dist = estimateDistanceMatrixForBlock(*block);
-      block->setProperty(getPropertyName(), dist);
+      auto_ptr<DistanceMatrix> dist(estimateDistanceMatrixForBlock(*block));
+      block->setProperty(getPropertyName(), dist.release());
       return block;
     }
 

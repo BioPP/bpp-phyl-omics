@@ -1,5 +1,5 @@
 //
-// File: MaximumLikelihooDistanceEstimationMafIterators.h
+// File: MaximumLikelihoodDistanceEstimationMafIterators.h
 // Created by: Julien Dutheil
 // Created on: Nov 13 2012
 //
@@ -54,7 +54,7 @@ class MaximumLikelihoodDistanceEstimationMafIterator:
   public AbstractDistanceEstimationMafIterator
 {
   private:
-    auto_ptr<DistanceEstimation> distEst_;
+    std::auto_ptr<DistanceEstimation> distEst_;
     double propGapsToKeep_; //Exclude sites with too many gaps
     bool gapsAsUnresolved_;  //For most models, should be yes as they do not allow for gap characters
     std::string paramOpt_;

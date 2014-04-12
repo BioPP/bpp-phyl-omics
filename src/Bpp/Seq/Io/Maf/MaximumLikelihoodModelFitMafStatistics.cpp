@@ -1,7 +1,7 @@
 //
-// File: MaximumLikelihoodDistanceEstimationMafIterators.cpp
+// File: MaximumLikelihoodModelFitMafStatistics.cpp
 // Created by: Julien Dutheil
-// Created on: Nov 13 2012
+// Created on: Mar 25 2014
 //
 
 /*
@@ -37,24 +37,57 @@ The fact that you are presently reading this means that you have had
 knowledge of the CeCILL license and that you accept its terms.
 */
 
-#include "MaximumLikelihoodDistanceEstimationMafIterator.h"
+#include "MaximumLikelihoodModelFitMafStatistics.h"
 
 //From bpp-seq:
 #include <Bpp/Seq/Container/SiteContainerTools.h>
 
-using namespace bpp;
+//From bpp-phyl:
+#include <Bpp/Phyl/Likelihood/RHomogeneousTreeLikelihood.h>
+#include <Bpp/Phyl/OptimizationTools.h>
 
-DistanceMatrix* MaximumLikelihoodDistanceEstimationMafIterator::estimateDistanceMatrixForBlock(const MafBlock& block)
+using namespace bpp;
+using namespace std;
+
+const string MaximumLikelihoodModelFitMafStatistics::NO_PROPERTY = "RESERVED_NOPROPERTY";
+
+void MaximumLikelihoodModelFitMafStatistics::compute(const MafBlock& block)
 {
   //First we get the alignment:
   auto_ptr<SiteContainer> sites(SiteContainerTools::removeGapSites(block.getAlignment(), propGapsToKeep_));
   if (gapsAsUnresolved_)
     SiteContainerTools::changeGapsToUnknownCharacters(*sites);
 
-  //Set the data and fit the matrix:
-  distEst_->setData(sites.get());
-  ParameterList p;
-  auto_ptr<DistanceMatrix> mat(OptimizationTools::estimateDistanceMatrix(*distEst_, p, paramOpt_, verbose_));
-  return mat.release();
+  //Second we get the tree:
+  const Tree* tree = 0;
+  if (!tree_.get()) {
+    //No default tree is given, we try to retrieve one from the block:
+    if (!block.hasProperty(treePropertyIn_))
+      throw Exception("MaximumLikelihoodModelFitMafIterator::fitModelBlock. No property available for " + treePropertyIn_);
+    try {
+      tree = &(dynamic_cast<const Tree&>(block.getProperty(treePropertyIn_)));
+      if (tree->isRooted())
+        throw Exception("MaximumLikelihoodModelFitMafIterator::fitModelBlock. Tree must be unrooted.");
+    } catch (bad_cast& e) {
+      throw Exception("MaximumLikelihoodModelFitMafIterator::fitModelBlock. A property was found for '" + treePropertyIn_ + "' but does not appear to contain a phylogenetic tree.");
+    }
+  } else {
+    tree = tree_.get();
+  }
+
+  //We build a new TreeLikelihood object:
+  auto_ptr<RHomogeneousTreeLikelihood> tl(
+      new RHomogeneousTreeLikelihood(*tree, *sites, model_.get(), rDist_.get(), false, false));
+  tl->initialize();
+  tl->setParameters(fixedParameters_);
+  
+  //We optimize parameters:
+  unsigned int nbIt = OptimizationTools::optimizeNumericalParameters2(tl.get(), initParameters_, 0, 0.000001, 10000, 0, 0, false, false, 0);
+
+  //And we save interesting parameter values:
+  result_.setValue("NbIterations", static_cast<double>(nbIt));
+  for (size_t i = 0;i < parametersOut_.size(); ++i) {
+    result_.setValue(parametersOut_[i], tl->getParameterValue(parametersOut_[i]));
+  }
 }
 

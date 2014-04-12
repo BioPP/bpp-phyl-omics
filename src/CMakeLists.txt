@@ -6,6 +6,7 @@
 SET(CPP_FILES
   Bpp/Seq/Io/Maf/CountDistanceEstimationMafIterator.cpp
   Bpp/Seq/Io/Maf/MaximumLikelihoodDistanceEstimationMafIterator.cpp
+  Bpp/Seq/Io/Maf/MaximumLikelihoodModelFitMafStatistics.cpp
   Bpp/Seq/Io/Maf/DistanceBasedPhylogenyReconstructionMafIterator.cpp
   Bpp/Seq/Io/Maf/TreeManipulationMafIterators.cpp
   Bpp/Seq/Io/Maf/OutputTreeMafIterator.cpp
@@ -16,6 +17,7 @@ SET(H_FILES
   Bpp/Seq/Io/Maf/AbstractDistanceEstimationMafIterator.h
   Bpp/Seq/Io/Maf/CountDistanceEstimationMafIterator.h
   Bpp/Seq/Io/Maf/MaximumLikelihoodDistanceEstimationMafIterator.h
+  Bpp/Seq/Io/Maf/MaximumLikelihoodModelFitMafStatistics.h
   Bpp/Seq/Io/Maf/AbstractPhylogenyReconstructionMafIterator.h
   Bpp/Seq/Io/Maf/DistanceBasedPhylogenyReconstructionMafIterator.h
   Bpp/Seq/Io/Maf/TreeManipulationMafIterators.h

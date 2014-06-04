@@ -44,6 +44,8 @@ knowledge of the CeCILL license and that you accept its terms.
 
 //From bpp-phyl:
 #include <Bpp/Phyl/Likelihood/RHomogeneousTreeLikelihood.h>
+#include <Bpp/Phyl/Likelihood/RNonHomogeneousTreeLikelihood.h>
+#include <Bpp/Phyl/Model/SubstitutionModelSetTools.h>
 #include <Bpp/Phyl/OptimizationTools.h>
 
 using namespace bpp;
@@ -76,8 +78,17 @@ void MaximumLikelihoodModelFitMafStatistics::compute(const MafBlock& block)
   }
 
   //We build a new TreeLikelihood object:
-  auto_ptr<RHomogeneousTreeLikelihood> tl(
-      new RHomogeneousTreeLikelihood(*tree, *sites, model_.get(), rDist_.get(), false, false));
+  auto_ptr<DiscreteRatesAcrossSitesTreeLikelihood> tl;
+  
+  if (rootFreqs_.get()) {
+    modelSet_.reset(SubstitutionModelSetTools::createHomogeneousModelSet(model_->clone(), rootFreqs_->clone(), tree)); 
+    tl.reset(new RNonHomogeneousTreeLikelihood(*tree, *sites, modelSet_.get(), rDist_.get(), false, true, false));
+    //Initialize:
+    if (initParameters_.size() == 0)
+      init_(); //so far, even if tree changed, parameter names are supposingly the same. This might not be true in some complex cases...
+  } else {
+    tl.reset(new RHomogeneousTreeLikelihood(*tree, *sites, model_.get(), rDist_.get(), false, false, true));
+  }
   tl->initialize();
   tl->setParameters(fixedParameters_);
   
@@ -90,4 +101,15 @@ void MaximumLikelihoodModelFitMafStatistics::compute(const MafBlock& block)
     result_.setValue(parametersOut_[i], tl->getParameterValue(parametersOut_[i]));
   }
 }
+
+void MaximumLikelihoodModelFitMafStatistics::init_() {
+  if (rootFreqs_.get()) {
+    initParameters_.addParameters(modelSet_->getIndependentParameters());
+  } else {
+    initParameters_.addParameters(model_->getIndependentParameters());
+  }
+  initParameters_.addParameters(rDist_->getIndependentParameters());
+  //Remove from initParameters the ones to consider fixed:
+  initParameters_.deleteParameters(fixedParameters_.getParameterNames()); 
+ }
 

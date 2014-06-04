@@ -45,6 +45,8 @@ knowledge of the CeCILL license and that you accept its terms.
 
 //From bpp-phyl:
 #include <Bpp/Phyl/Model/SubstitutionModel.h>
+#include <Bpp/Phyl/Model/SubstitutionModelSetTools.h>
+#include <Bpp/Phyl/Model/FrequenciesSet/NucleotideFrequenciesSet.h>
 #include <Bpp/Phyl/Tree.h>
 #include <Bpp/Phyl/Likelihood/DiscreteRatesAcrossSitesTreeLikelihood.h>
 
@@ -65,7 +67,9 @@ class MaximumLikelihoodModelFitMafStatistics:
 
   private:
     std::auto_ptr<SubstitutionModel> model_;
+    std::auto_ptr<SubstitutionModelSet> modelSet_; //Only used in case of non-stationary model.
     std::auto_ptr<DiscreteDistribution> rDist_;
+    std::auto_ptr<NucleotideFrequenciesSet> rootFreqs_;
     std::string treePropertyIn_;
     std::auto_ptr<const Tree> tree_;
     std::vector<std::string> parametersOut_;
@@ -83,6 +87,7 @@ class MaximumLikelihoodModelFitMafStatistics:
      *
      * @param model The substitution model.
      * @param rDist The distribution of rates.
+     * @param rootFreqs Root frequencies for non-stationary model. If set to 0, then a stationary model is assumed.
      * @param treePropertyIn The name of the property where the input tree is stored for each block.
      * @param parametersOut Parameters to output. 
      * @param fixedParameters Parameter which should not be estimated but fixed to the given value instead.
@@ -93,6 +98,7 @@ class MaximumLikelihoodModelFitMafStatistics:
     MaximumLikelihoodModelFitMafStatistics(
         SubstitutionModel* model,
         DiscreteDistribution* rDist,
+        NucleotideFrequenciesSet* rootFreqs,
         const std::string& treePropertyIn,
         const std::vector<std::string>& parametersOut,
         const ParameterList& fixedParameters,
@@ -100,14 +106,15 @@ class MaximumLikelihoodModelFitMafStatistics:
         double propGapsToKeep = 0,
         bool gapsAsUnresolved = true):
       AbstractMafStatistics(),
-      model_(model), rDist_(rDist),
+      model_(model), modelSet_(0), rDist_(rDist), rootFreqs_(rootFreqs),
       treePropertyIn_(treePropertyIn), tree_(0), parametersOut_(parametersOut),
       reestimateBrLen_(reestimateBrLen), propGapsToKeep_(propGapsToKeep), gapsAsUnresolved_(gapsAsUnresolved),
-      initParameters_(model->getIndependentParameters()), fixedParameters_(fixedParameters)
+      initParameters_(), fixedParameters_(fixedParameters)
     {
-      initParameters_.addParameters(rDist->getIndependentParameters());
-      //Remove from initParameters the ones to consider fixed:
-      initParameters_.deleteParameters(fixedParameters.getParameterNames());
+      if (!rootFreqs)
+        init_();
+      //Otherwise we do not initialize parameters as the tree might change for each block.
+      //We therefore have to initialize once for each block.
     }
 
     /**
@@ -117,6 +124,7 @@ class MaximumLikelihoodModelFitMafStatistics:
      *
      * @param model The substitution model.
      * @param rDist The distribution of rates.
+     * @param rootFreqs Root frequencies for non-stationary model. If set to 0, then a stationary model is assumed.
      * @param tree The tree to use for fitting the model.
      * @param parametersOut Parameters to output. 
      * @param fixedParameters Parameter which should not be estimated but fixed to the given value instead.
@@ -127,6 +135,7 @@ class MaximumLikelihoodModelFitMafStatistics:
     MaximumLikelihoodModelFitMafStatistics(
         SubstitutionModel* model,
         DiscreteDistribution* rDist,
+        NucleotideFrequenciesSet* rootFreqs,
         const Tree* tree,
         const std::vector<std::string>& parametersOut,
         const ParameterList& fixedParameters,
@@ -134,20 +143,20 @@ class MaximumLikelihoodModelFitMafStatistics:
         double propGapsToKeep = 0,
         bool gapsAsUnresolved = true):
       AbstractMafStatistics(),
-      model_(model), rDist_(rDist),
+      model_(model), modelSet_(0), rDist_(rDist), rootFreqs_(rootFreqs),
       treePropertyIn_(NO_PROPERTY), tree_(0), parametersOut_(parametersOut),
       reestimateBrLen_(reestimateBrLen), propGapsToKeep_(propGapsToKeep), gapsAsUnresolved_(gapsAsUnresolved),
-      initParameters_(model->getParameters()), fixedParameters_(fixedParameters)
+      initParameters_(), fixedParameters_(fixedParameters)
     {
-      initParameters_.addParameters(rDist->getParameters());
-      //Remove from initParameters the ones to consider fixed:
-      initParameters_.deleteParameters(fixedParameters.getParameterNames());
+      if (rootFreqs)
+        modelSet_.reset(SubstitutionModelSetTools::createHomogeneousModelSet(model->clone(), rootFreqs->clone(), tree));
+      init_();
     }
 
   private:
     MaximumLikelihoodModelFitMafStatistics(const MaximumLikelihoodModelFitMafStatistics& mafstat):
       AbstractMafStatistics(),
-      model_(0), rDist_(0),
+      model_(0), modelSet_(0), rDist_(0), rootFreqs_(0),
       treePropertyIn_(mafstat.treePropertyIn_), tree_(0), parametersOut_(mafstat.parametersOut_),
       reestimateBrLen_(mafstat.reestimateBrLen_), propGapsToKeep_(mafstat.propGapsToKeep_), gapsAsUnresolved_(mafstat.gapsAsUnresolved_),
       initParameters_(mafstat.initParameters_), fixedParameters_(mafstat.fixedParameters_)
@@ -156,7 +165,9 @@ class MaximumLikelihoodModelFitMafStatistics:
     MaximumLikelihoodModelFitMafStatistics& operator=(const MaximumLikelihoodModelFitMafStatistics& mafstat)
     {
       model_.reset();
+      modelSet_.reset();
       rDist_.reset();
+      rootFreqs_.reset();
       treePropertyIn_ = mafstat.treePropertyIn_;
       tree_.reset();
       parametersOut_ = mafstat.parametersOut_;
@@ -180,6 +191,9 @@ class MaximumLikelihoodModelFitMafStatistics:
     }
 
     static const std::string NO_PROPERTY;
+  
+  private:
+    void init_();
 };
 
 } //end of namespace bpp.

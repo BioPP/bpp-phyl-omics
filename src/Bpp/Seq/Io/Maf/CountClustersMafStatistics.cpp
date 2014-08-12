@@ -55,7 +55,7 @@ unsigned int CountClustersMafStatistics::getNumberOfClusters_(const Node* node, 
   if (h < threshold_) {
     nClust++;
   } else {
-    for (unsigned int i = 0; i < node->getNumberOfSons(); ++i) {
+    for (int i = 0; i < static_cast<int>(node->getNumberOfSons()); ++i) {
       nClust += getNumberOfClusters_((*node)[i], heights);
     }
   }

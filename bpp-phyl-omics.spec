@@ -1,5 +1,5 @@
 %define _basename bpp-phyl-omics
-%define _version 2.1.0
+%define _version 2.2.0
 %define _release 1
 %define _prefix /usr
 
@@ -189,8 +189,10 @@ exit 0
 %{_prefix}/include/*
 
 %changelog
+* Fri Sep 26 2014 Julien Dutheil <julien.dutheil@univ-montp2.fr> 2.2.0-1
+- Added model fitting and parameter estimations.
 * Thu Mar 07 2013 Julien Dutheil <julien.dutheil@univ-montp2.fr> 2.1.0-1
 - Initial release. Contains tools to build phylogenies along a genome alignment (distance methods only for now).
 * Tue Nov 06 2012 Julien Dutheil <julien.dutheil@univ-montp2.fr> 2.0.3-1
-- First draft of the spec file
+- First draft of the spec file.
 

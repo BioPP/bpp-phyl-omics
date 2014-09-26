@@ -1,3 +1,9 @@
+libbpp-phyl-omics (2.2.0-1) unstable; urgency=low
+
+  * Added model fitting and parameter estimations.
+
+ -- Julien Dutheil <julien.dutheil@univ-montp2.fr>  Fri, 26 Sep 2014 14:00:00 +0100
+
 libbpp-phyl-omics (2.1.0-1) unstable; urgency=low
 
   * Contain tools to apply phylogenetic method along a genome alignment. Only distance methods are implemented for now.

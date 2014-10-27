@@ -47,14 +47,14 @@ using namespace bpp;
 DistanceMatrix* MaximumLikelihoodDistanceEstimationMafIterator::estimateDistanceMatrixForBlock(const MafBlock& block)
 {
   //First we get the alignment:
-  auto_ptr<SiteContainer> sites(SiteContainerTools::removeGapSites(block.getAlignment(), propGapsToKeep_));
+  unique_ptr<SiteContainer> sites(SiteContainerTools::removeGapSites(block.getAlignment(), propGapsToKeep_));
   if (gapsAsUnresolved_)
     SiteContainerTools::changeGapsToUnknownCharacters(*sites);
 
   //Set the data and fit the matrix:
   distEst_->setData(sites.get());
   ParameterList p;
-  auto_ptr<DistanceMatrix> mat(OptimizationTools::estimateDistanceMatrix(*distEst_, p, paramOpt_, verbose_));
+  unique_ptr<DistanceMatrix> mat(OptimizationTools::estimateDistanceMatrix(*distEst_, p, paramOpt_, verbose_));
   return mat.release();
 }
 

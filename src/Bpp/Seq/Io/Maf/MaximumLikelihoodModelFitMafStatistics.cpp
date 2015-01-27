@@ -110,6 +110,6 @@ void MaximumLikelihoodModelFitMafStatistics::init_() {
   }
   initParameters_.addParameters(rDist_->getIndependentParameters());
   //Remove from initParameters the ones to consider fixed:
-  initParameters_.deleteParameters(fixedParameters_.getParameterNames()); 
+  initParameters_.deleteParameters(fixedParameters_.getParameterNames());
  }
 

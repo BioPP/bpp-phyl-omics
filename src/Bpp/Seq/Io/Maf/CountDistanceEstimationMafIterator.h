@@ -62,9 +62,10 @@ class CountDistanceEstimationMafIterator:
      * @param iterator The input iterator.
      * @param gapOption How to deal with gaps. Option forawarded to the computeSimilarityMatrix method.
      * @param unresolvedAsGap Tell if unresolved characters should be considered as gaps. Option forawarded to the computeSimilarityMatrix method.
+     * @param addCoordinatesInSequenceNames Should full sequence coordinates be included in the sequence name in the output matrix?
      */
-    CountDistanceEstimationMafIterator(MafIterator* iterator, const std::string& gapOption, bool unresolvedAsGap):
-      AbstractDistanceEstimationMafIterator(iterator),
+    CountDistanceEstimationMafIterator(MafIterator* iterator, const std::string& gapOption, bool unresolvedAsGap, bool addCoordinatesInSequenceNames = true):
+      AbstractDistanceEstimationMafIterator(iterator, addCoordinatesInSequenceNames),
       gapOption_(gapOption), unresolvedAsGap_(unresolvedAsGap)
     {}
     

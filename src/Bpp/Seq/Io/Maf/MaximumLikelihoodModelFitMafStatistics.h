@@ -81,7 +81,7 @@ class MaximumLikelihoodModelFitMafStatistics:
 
   public:
     /**
-     * @brief Build a new distance estimation maf mafstat, based on the DistanceEstimation class.
+     * @brief Build a new distance estimation maf statistic, based on the DistanceEstimation class.
      *
      * A tree must be associated to each block before this analysis can be run.
      *
@@ -111,14 +111,29 @@ class MaximumLikelihoodModelFitMafStatistics:
       reestimateBrLen_(reestimateBrLen), propGapsToKeep_(propGapsToKeep), gapsAsUnresolved_(gapsAsUnresolved),
       initParameters_(), fixedParameters_(fixedParameters)
     {
-      if (!rootFreqs)
+      if (!rootFreqs) {
         init_();
-      //Otherwise we do not initialize parameters as the tree might change for each block.
-      //We therefore have to initialize once for each block.
+        ApplicationTools::displayMessage("-- Available parameters:");
+        std::vector<std::string> pl = model->getParameters().getParameterNames();
+        for (size_t i = 0; i < pl.size(); ++i) {
+          ApplicationTools::displayMessage("    " + pl[i]);
+        }
+      } else {
+        //Otherwise we do not initialize parameters as the tree might change for each block.
+        //We therefore have to initialize once for each block.
+        std::vector<std::string> pl = model->getParameters().getParameterNames();
+        for (size_t i = 0; i < pl.size(); ++i) {
+          ApplicationTools::displayMessage("    " + pl[i] + "_1");
+        }
+        pl = rootFreqs->getParameters().getParameterNames();
+        for (size_t i = 0; i < pl.size(); ++i) {
+          ApplicationTools::displayMessage("    " + pl[i]);
+        }
+      }    
     }
 
     /**
-     * @brief Build a new distance estimation maf mafstat, based on the DistanceEstimation class.
+     * @brief Build a new distance estimation maf statistic, based on the DistanceEstimation class.
      *
      * This analysis use the same input tree for all blocks.
      *
@@ -151,6 +166,12 @@ class MaximumLikelihoodModelFitMafStatistics:
       if (rootFreqs)
         modelSet_.reset(SubstitutionModelSetTools::createHomogeneousModelSet(model->clone(), rootFreqs->clone(), tree));
       init_();
+
+      ApplicationTools::displayMessage("-- Available parameters:");
+      std::vector<std::string> pl = modelSet_->getParameters().getParameterNames();
+      for (size_t i = 0; i < pl.size(); ++i) {
+        ApplicationTools::displayMessage("    " + pl[i]);
+      }
     }
 
   private:

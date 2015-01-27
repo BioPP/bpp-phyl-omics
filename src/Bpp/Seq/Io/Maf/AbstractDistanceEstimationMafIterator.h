@@ -59,9 +59,13 @@ namespace bpp  {
 class AbstractDistanceEstimationMafIterator:
   public AbstractFilterMafIterator
 {
+  private:
+    bool addCoordinatesInSequenceNames_;
+
   public:
-    AbstractDistanceEstimationMafIterator(MafIterator* iterator):
-      AbstractFilterMafIterator(iterator)
+    AbstractDistanceEstimationMafIterator(MafIterator* iterator, bool addCoordinatesInSequenceNames):
+      AbstractFilterMafIterator(iterator),
+      addCoordinatesInSequenceNames_(addCoordinatesInSequenceNames)
     {}
 
   private:
@@ -70,6 +74,15 @@ class AbstractDistanceEstimationMafIterator:
       MafBlock* block = iterator_->nextBlock();
       if (!block) return 0;
       auto_ptr<DistanceMatrix> dist(estimateDistanceMatrixForBlock(*block));
+      if (!addCoordinatesInSequenceNames_) {
+        for (size_t i = 0; i < dist->size(); ++i) {
+          std::string name = dist->getName(i);
+          size_t pos = name.find('.');
+          if (pos != std::string::npos) {
+            dist->setName(i, name.substr(0, pos));
+          }
+        }
+      }
       block->setProperty(getPropertyName(), dist.release());
       return block;
     }

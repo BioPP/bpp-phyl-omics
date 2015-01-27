@@ -69,6 +69,7 @@ class MaximumLikelihoodDistanceEstimationMafIterator:
      * @param propGapsToKeep The maximum gapfrequency in a site to include it in the analysis. 
      * @param gapsAsUnresolved Tell if gap characters should be considered as unresolved states. In ost cases it should be set to true, as very few substitution models consider gaps as genuine states.
      * @param paramOpt Tell if substitution model parameters should be optimized in a pairwise manner or not. See OptimizationTools::estimateDistanceMatrix for more details.
+     * @param addCoordinatesInSequenceNames Should full sequence coordinates be included in the sequence name in the output matrix?
      * @param verbose Tell if some information should be output in the default message stream.
      */
     MaximumLikelihoodDistanceEstimationMafIterator(MafIterator* iterator,
@@ -76,8 +77,9 @@ class MaximumLikelihoodDistanceEstimationMafIterator:
         double propGapsToKeep = 0,
         bool gapsAsUnresolved = true,
         const string& paramOpt = OptimizationTools::DISTANCEMETHOD_INIT,
+        bool addCoordinatesInSequenceNames = true,
         bool verbose = true):
-      AbstractDistanceEstimationMafIterator(iterator),
+      AbstractDistanceEstimationMafIterator(iterator, addCoordinatesInSequenceNames),
       distEst_(distEst), propGapsToKeep_(propGapsToKeep), gapsAsUnresolved_(gapsAsUnresolved), paramOpt_(paramOpt)
     {
       setVerbose(verbose);
@@ -86,7 +88,7 @@ class MaximumLikelihoodDistanceEstimationMafIterator:
 
   private:
     MaximumLikelihoodDistanceEstimationMafIterator(const MaximumLikelihoodDistanceEstimationMafIterator& iterator):
-      AbstractDistanceEstimationMafIterator(0),
+      AbstractDistanceEstimationMafIterator(0, true),
       distEst_(0), propGapsToKeep_(iterator.propGapsToKeep_),
       gapsAsUnresolved_(iterator.gapsAsUnresolved_), paramOpt_(iterator.paramOpt_)
     {}

@@ -68,10 +68,11 @@ class OutputTreeMafIterator:
     std::ostream* output_;
     std::string treeProperty_;
     Newick writer_;
+    bool extendedSeqNames_;
 
   public:
-    OutputTreeMafIterator(MafIterator* iterator, std::ostream* out, const std::string treeProperty) :
-      AbstractFilterMafIterator(iterator), output_(out), treeProperty_(treeProperty), writer_()
+    OutputTreeMafIterator(MafIterator* iterator, std::ostream* out, const std::string treeProperty, bool extendedSeqNames = true) :
+      AbstractFilterMafIterator(iterator), output_(out), treeProperty_(treeProperty), writer_(), extendedSeqNames_(extendedSeqNames)
     {}
 
   private:
@@ -79,7 +80,8 @@ class OutputTreeMafIterator:
       AbstractFilterMafIterator(0),
       output_(iterator.output_),
       treeProperty_(iterator.treeProperty_),
-      writer_()
+      writer_(),
+      extendedSeqNames_(iterator.extendedSeqNames_)
     {}
     
     OutputTreeMafIterator& operator=(const OutputTreeMafIterator& iterator)
@@ -87,6 +89,7 @@ class OutputTreeMafIterator:
       output_ = iterator.output_;
       treeProperty_ = iterator.treeProperty_;
       writer_ = iterator.writer_;
+      extendedSeqNames_ = iterator.extendedSeqNames_;
       return *this;
     }
 
@@ -95,12 +98,13 @@ class OutputTreeMafIterator:
     MafBlock* analyseCurrentBlock_() throw (Exception) {
       currentBlock_ = iterator_->nextBlock();
       if (output_ && currentBlock_)
-        writeBlock(*output_, *currentBlock_);
+        writeBlock_(*output_, *currentBlock_);
       return currentBlock_;
     }
 
   private:
-    void writeBlock(std::ostream& out, const MafBlock& block) const;
+    void writeBlock_(std::ostream& out, const MafBlock& block) const;
+    void stripNames_(Node& node) const;
 };
 
 } //end of namespace bpp.

@@ -76,12 +76,14 @@ class MaximumLikelihoodModelFitMafStatistics:
     bool reestimateBrLen_;
     double propGapsToKeep_; //Exclude sites with too many gaps
     bool gapsAsUnresolved_;  //For most models, should be yes as they do not allow for gap characters
+    bool useClock_;
+    bool reparametrize_;
     ParameterList initParameters_;
     ParameterList fixedParameters_;
 
   public:
     /**
-     * @brief Build a new distance estimation maf statistic, based on the DistanceEstimation class.
+     * @brief Build a model fit maf statistic.
      *
      * A tree must be associated to each block before this analysis can be run.
      *
@@ -94,6 +96,8 @@ class MaximumLikelihoodModelFitMafStatistics:
      * @param reestimateBrLen If the branch length from the tree should be reestimated (otherwise kept as is).
      * @param propGapsToKeep The maximum gapfrequency in a site to include it in the analysis. 
      * @param gapsAsUnresolved Tell if gap characters should be considered as unresolved states. In ost cases it should be set to true, as very few substitution models consider gaps as genuine states.
+     * @param useClock Should a ultrametric tree be fitted (global clock)?
+     * @param reparametrize Transform parameters to remove constraints.
      */
     MaximumLikelihoodModelFitMafStatistics(
         SubstitutionModel* model,
@@ -104,11 +108,14 @@ class MaximumLikelihoodModelFitMafStatistics:
         const ParameterList& fixedParameters,
         bool reestimateBrLen = true,
         double propGapsToKeep = 0,
-        bool gapsAsUnresolved = true):
+        bool gapsAsUnresolved = true,
+        bool useClock = false,
+        bool reparametrize = false):
       AbstractMafStatistics(),
       model_(model), modelSet_(0), rDist_(rDist), rootFreqs_(rootFreqs),
       treePropertyIn_(treePropertyIn), tree_(0), parametersOut_(parametersOut),
       reestimateBrLen_(reestimateBrLen), propGapsToKeep_(propGapsToKeep), gapsAsUnresolved_(gapsAsUnresolved),
+      useClock_(useClock), reparametrize_(reparametrize),
       initParameters_(), fixedParameters_(fixedParameters)
     {
       if (!rootFreqs) {
@@ -133,7 +140,7 @@ class MaximumLikelihoodModelFitMafStatistics:
     }
 
     /**
-     * @brief Build a new distance estimation maf statistic, based on the DistanceEstimation class.
+     * @brief Build a model fit maf statistic.
      *
      * This analysis use the same input tree for all blocks.
      *
@@ -146,6 +153,8 @@ class MaximumLikelihoodModelFitMafStatistics:
      * @param reestimateBrLen If the branch length from the tree should be reestimated (otherwise kept as is).
      * @param propGapsToKeep The maximum gapfrequency in a site to include it in the analysis. 
      * @param gapsAsUnresolved Tell if gap characters should be considered as unresolved states. In ost cases it should be set to true, as very few substitution models consider gaps as genuine states.
+     * @param useClock Should a ultrametric tree be fitted (global clock)?
+     * @param reparametrize Transform parameters to remove constraints.
      */
     MaximumLikelihoodModelFitMafStatistics(
         SubstitutionModel* model,
@@ -156,21 +165,31 @@ class MaximumLikelihoodModelFitMafStatistics:
         const ParameterList& fixedParameters,
         bool reestimateBrLen = true,
         double propGapsToKeep = 0,
-        bool gapsAsUnresolved = true):
+        bool gapsAsUnresolved = true,
+        bool useClock = false,
+        bool reparametrize = false):
       AbstractMafStatistics(),
       model_(model), modelSet_(0), rDist_(rDist), rootFreqs_(rootFreqs),
-      treePropertyIn_(NO_PROPERTY), tree_(0), parametersOut_(parametersOut),
+      treePropertyIn_(NO_PROPERTY), tree_(tree), parametersOut_(parametersOut),
       reestimateBrLen_(reestimateBrLen), propGapsToKeep_(propGapsToKeep), gapsAsUnresolved_(gapsAsUnresolved),
+      useClock_(useClock), reparametrize_(reparametrize),
       initParameters_(), fixedParameters_(fixedParameters)
     {
-      if (rootFreqs)
+      if (!rootFreqs) {
+        init_();
+        ApplicationTools::displayMessage("-- Available parameters:");
+        std::vector<std::string> pl = model->getParameters().getParameterNames();
+        for (size_t i = 0; i < pl.size(); ++i) {
+          ApplicationTools::displayMessage("    " + pl[i]);
+        }
+      } else{
         modelSet_.reset(SubstitutionModelSetTools::createHomogeneousModelSet(model->clone(), rootFreqs->clone(), tree));
-      init_();
-
-      ApplicationTools::displayMessage("-- Available parameters:");
-      std::vector<std::string> pl = modelSet_->getParameters().getParameterNames();
-      for (size_t i = 0; i < pl.size(); ++i) {
-        ApplicationTools::displayMessage("    " + pl[i]);
+        init_();
+        ApplicationTools::displayMessage("-- Available parameters:");
+        std::vector<std::string> pl = modelSet_->getParameters().getParameterNames();
+        for (size_t i = 0; i < pl.size(); ++i) {
+          ApplicationTools::displayMessage("    " + pl[i]);
+        }
       }
     }
 
@@ -180,6 +199,7 @@ class MaximumLikelihoodModelFitMafStatistics:
       model_(0), modelSet_(0), rDist_(0), rootFreqs_(0),
       treePropertyIn_(mafstat.treePropertyIn_), tree_(0), parametersOut_(mafstat.parametersOut_),
       reestimateBrLen_(mafstat.reestimateBrLen_), propGapsToKeep_(mafstat.propGapsToKeep_), gapsAsUnresolved_(mafstat.gapsAsUnresolved_),
+      useClock_(mafstat.useClock_), reparametrize_(mafstat.reparametrize_),
       initParameters_(mafstat.initParameters_), fixedParameters_(mafstat.fixedParameters_)
     {}
     
@@ -197,6 +217,8 @@ class MaximumLikelihoodModelFitMafStatistics:
       gapsAsUnresolved_ = mafstat.gapsAsUnresolved_;
       initParameters_ = mafstat.initParameters_;
       fixedParameters_ = mafstat.fixedParameters_;
+      useClock_ = mafstat.useClock_;
+      reparametrize_ = mafstat.reparametrize_;
       return *this;
     }
      

@@ -57,6 +57,11 @@ void MaximumLikelihoodModelFitMafStatistics::compute(const MafBlock& block)
 {
   //First we get the alignment:
   auto_ptr<SiteContainer> sites(SiteContainerTools::removeGapSites(block.getAlignment(), propGapsToKeep_));
+  //Update names if needed:
+  if (tree_.get()) {
+    sites->setSequencesNames(block.getSpeciesList(), true);
+  }
+
   if (gapsAsUnresolved_)
     SiteContainerTools::changeGapsToUnknownCharacters(*sites);
 
@@ -93,7 +98,10 @@ void MaximumLikelihoodModelFitMafStatistics::compute(const MafBlock& block)
   tl->setParameters(fixedParameters_);
   
   //We optimize parameters:
-  unsigned int nbIt = OptimizationTools::optimizeNumericalParameters2(tl.get(), initParameters_, 0, 0.000001, 10000, 0, 0, false, false, 0);
+  ParameterList initParameters = initParameters_;
+  if (reestimateBrLen_)
+    initParameters.addParameters(tl->getBranchLengthsParameters());
+  unsigned int nbIt = OptimizationTools::optimizeNumericalParameters2(tl.get(), initParameters, 0, 0.000001, 10000, 0, 0, reparametrize_, useClock_, 0);
 
   //And we save interesting parameter values:
   result_.setValue("NbIterations", static_cast<double>(nbIt));

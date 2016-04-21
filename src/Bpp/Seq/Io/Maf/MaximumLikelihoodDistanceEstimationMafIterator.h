@@ -54,7 +54,7 @@ class MaximumLikelihoodDistanceEstimationMafIterator:
   public AbstractDistanceEstimationMafIterator
 {
   private:
-    std::auto_ptr<DistanceEstimation> distEst_;
+    std::unique_ptr<DistanceEstimation> distEst_;
     double propGapsToKeep_; //Exclude sites with too many gaps
     bool gapsAsUnresolved_;  //For most models, should be yes as they do not allow for gap characters
     std::string paramOpt_;
@@ -89,7 +89,7 @@ class MaximumLikelihoodDistanceEstimationMafIterator:
   private:
     MaximumLikelihoodDistanceEstimationMafIterator(const MaximumLikelihoodDistanceEstimationMafIterator& iterator):
       AbstractDistanceEstimationMafIterator(0, true),
-      distEst_(0), propGapsToKeep_(iterator.propGapsToKeep_),
+      distEst_(), propGapsToKeep_(iterator.propGapsToKeep_),
       gapsAsUnresolved_(iterator.gapsAsUnresolved_), paramOpt_(iterator.paramOpt_)
     {}
     

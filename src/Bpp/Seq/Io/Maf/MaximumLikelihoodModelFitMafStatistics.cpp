@@ -56,7 +56,7 @@ const string MaximumLikelihoodModelFitMafStatistics::NO_PROPERTY = "RESERVED_NOP
 void MaximumLikelihoodModelFitMafStatistics::compute(const MafBlock& block)
 {
   //First we get the alignment:
-  auto_ptr<SiteContainer> sites(SiteContainerTools::removeGapSites(block.getAlignment(), propGapsToKeep_));
+  unique_ptr<SiteContainer> sites(SiteContainerTools::removeGapSites(block.getAlignment(), propGapsToKeep_));
   //Update names if needed:
   if (tree_.get()) {
     sites->setSequencesNames(block.getSpeciesList(), true);
@@ -83,7 +83,7 @@ void MaximumLikelihoodModelFitMafStatistics::compute(const MafBlock& block)
   }
 
   //We build a new TreeLikelihood object:
-  auto_ptr<DiscreteRatesAcrossSitesTreeLikelihood> tl;
+  unique_ptr<DiscreteRatesAcrossSitesTreeLikelihood> tl;
   
   if (rootFreqs_.get()) {
     modelSet_.reset(SubstitutionModelSetTools::createHomogeneousModelSet(model_->clone(), rootFreqs_->clone(), tree)); 

@@ -53,7 +53,7 @@ class DistanceBasedPhylogenyReconstructionMafIterator:
 {
   private:
     std::string distanceProperty_;
-    std::auto_ptr<DistanceMethod> builder_;
+    std::unique_ptr<DistanceMethod> builder_;
   
   public:
     DistanceBasedPhylogenyReconstructionMafIterator(MafIterator* iterator, DistanceMethod* method, const std::string& property):

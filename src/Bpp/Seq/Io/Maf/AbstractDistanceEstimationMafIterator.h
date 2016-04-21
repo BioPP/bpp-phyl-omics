@@ -73,7 +73,7 @@ class AbstractDistanceEstimationMafIterator:
     {
       MafBlock* block = iterator_->nextBlock();
       if (!block) return 0;
-      auto_ptr<DistanceMatrix> dist(estimateDistanceMatrixForBlock(*block));
+      unique_ptr<DistanceMatrix> dist(estimateDistanceMatrixForBlock(*block));
       if (!addCoordinatesInSequenceNames_) {
         for (size_t i = 0; i < dist->size(); ++i) {
           std::string name = dist->getName(i);

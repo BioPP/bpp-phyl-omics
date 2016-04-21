@@ -66,12 +66,12 @@ class MaximumLikelihoodModelFitMafStatistics:
 {
 
   private:
-    std::auto_ptr<SubstitutionModel> model_;
-    std::auto_ptr<SubstitutionModelSet> modelSet_; //Only used in case of non-stationary model.
-    std::auto_ptr<DiscreteDistribution> rDist_;
-    std::auto_ptr<NucleotideFrequenciesSet> rootFreqs_;
+    std::unique_ptr<SubstitutionModel> model_;
+    std::unique_ptr<SubstitutionModelSet> modelSet_; //Only used in case of non-stationary model.
+    std::unique_ptr<DiscreteDistribution> rDist_;
+    std::unique_ptr<NucleotideFrequenciesSet> rootFreqs_;
     std::string treePropertyIn_;
-    std::auto_ptr<const Tree> tree_;
+    std::unique_ptr<const Tree> tree_;
     std::vector<std::string> parametersOut_;
     bool reestimateBrLen_;
     double propGapsToKeep_; //Exclude sites with too many gaps
@@ -112,8 +112,8 @@ class MaximumLikelihoodModelFitMafStatistics:
         bool useClock = false,
         bool reparametrize = false):
       AbstractMafStatistics(),
-      model_(model), modelSet_(0), rDist_(rDist), rootFreqs_(rootFreqs),
-      treePropertyIn_(treePropertyIn), tree_(0), parametersOut_(parametersOut),
+      model_(model), modelSet_(), rDist_(rDist), rootFreqs_(rootFreqs),
+      treePropertyIn_(treePropertyIn), tree_(), parametersOut_(parametersOut),
       reestimateBrLen_(reestimateBrLen), propGapsToKeep_(propGapsToKeep), gapsAsUnresolved_(gapsAsUnresolved),
       useClock_(useClock), reparametrize_(reparametrize),
       initParameters_(), fixedParameters_(fixedParameters)
@@ -169,7 +169,7 @@ class MaximumLikelihoodModelFitMafStatistics:
         bool useClock = false,
         bool reparametrize = false):
       AbstractMafStatistics(),
-      model_(model), modelSet_(0), rDist_(rDist), rootFreqs_(rootFreqs),
+      model_(model), modelSet_(), rDist_(rDist), rootFreqs_(rootFreqs),
       treePropertyIn_(NO_PROPERTY), tree_(tree), parametersOut_(parametersOut),
       reestimateBrLen_(reestimateBrLen), propGapsToKeep_(propGapsToKeep), gapsAsUnresolved_(gapsAsUnresolved),
       useClock_(useClock), reparametrize_(reparametrize),
@@ -196,8 +196,8 @@ class MaximumLikelihoodModelFitMafStatistics:
   private:
     MaximumLikelihoodModelFitMafStatistics(const MaximumLikelihoodModelFitMafStatistics& mafstat):
       AbstractMafStatistics(),
-      model_(0), modelSet_(0), rDist_(0), rootFreqs_(0),
-      treePropertyIn_(mafstat.treePropertyIn_), tree_(0), parametersOut_(mafstat.parametersOut_),
+      model_(), modelSet_(), rDist_(), rootFreqs_(),
+      treePropertyIn_(mafstat.treePropertyIn_), tree_(), parametersOut_(mafstat.parametersOut_),
       reestimateBrLen_(mafstat.reestimateBrLen_), propGapsToKeep_(mafstat.propGapsToKeep_), gapsAsUnresolved_(mafstat.gapsAsUnresolved_),
       useClock_(mafstat.useClock_), reparametrize_(mafstat.reparametrize_),
       initParameters_(mafstat.initParameters_), fixedParameters_(mafstat.fixedParameters_)

@@ -10,6 +10,7 @@ SET(CPP_FILES
   Bpp/Seq/Io/Maf/DistanceBasedPhylogenyReconstructionMafIterator.cpp
   Bpp/Seq/Io/Maf/TreeManipulationMafIterators.cpp
   Bpp/Seq/Io/Maf/OutputTreeMafIterator.cpp
+  Bpp/Seq/Io/Maf/OutputDistanceMatrixMafIterator.cpp
   Bpp/Seq/Io/Maf/CountClustersMafStatistics.cpp
   )
 
@@ -22,6 +23,7 @@ SET(H_FILES
   Bpp/Seq/Io/Maf/DistanceBasedPhylogenyReconstructionMafIterator.h
   Bpp/Seq/Io/Maf/TreeManipulationMafIterators.h
   Bpp/Seq/Io/Maf/OutputTreeMafIterator.h
+  Bpp/Seq/Io/Maf/OutputDistanceMatrixMafIterator.h
   Bpp/Seq/Io/Maf/CountClustersMafStatistics.h
   )
 

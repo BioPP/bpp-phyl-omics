@@ -1,7 +1,7 @@
 //
-// File: OutputTreeMafIterator.h
+// File: OutputDistanceMatrixMafIterator.h
 // Created by: Julien Dutheil
-// Created on: Jul 24 2012
+// Created on: Apr 26 2016
 //
 
 /*
@@ -37,57 +37,49 @@ The fact that you are presently reading this means that you have had
 knowledge of the CeCILL license and that you accept its terms.
 */
 
-#ifndef _OUTPUTTREEMAFITERATOR_H_
-#define _OUTPUTTREEMAFITERATOR_H_
+#ifndef _OUTPUTDISTANCEMATRIXMAFITERATOR_H_
+#define _OUTPUTDISTANCEMATRIXMAFITERATOR_H_
 
 #include <Bpp/Seq/Io/Maf/MafIterator.h>
 
-//From bpp-phyl:
-#include <Bpp/Phyl/Tree.h>
-#include <Bpp/Phyl/Io/Newick.h>
+//From bpp-seq:
+#include <Bpp/Seq/DistanceMatrix.h>
 
-/**
- * @mainpage
- *
- * @par
- * The bpp-phyl-omics library contains 'omics' phylogenetic tools and classes.
- *
- * As for Bio++ version 2.1.0, these consist of bpp::MafIterator classes allowing to reconstruct phylogenies from a genome alignment.
- * More tools are expected to developped in the incoming versions.
- */
+//From bpp-phyl:
+#include <Bpp/Phyl/Io/PhylipDistanceMatrixFormat.h>
 
 namespace bpp {
 
 /**
  * @brief This iterator print an attached tree to a newick file.
  */
-class OutputTreeMafIterator:
+class OutputDistanceMatrixMafIterator:
   public AbstractFilterMafIterator
 {
   private:
     std::ostream* output_;
-    std::string treeProperty_;
-    Newick writer_;
+    std::string distProperty_;
+    PhylipDistanceMatrixFormat writer_;
     bool extendedSeqNames_;
 
   public:
-    OutputTreeMafIterator(MafIterator* iterator, std::ostream* out, const std::string& treeProperty, bool extendedSeqNames = true) :
-      AbstractFilterMafIterator(iterator), output_(out), treeProperty_(treeProperty), writer_(), extendedSeqNames_(extendedSeqNames)
+    OutputDistanceMatrixMafIterator(MafIterator* iterator, std::ostream* out, const std::string& distProperty, bool extendedSeqNames = true) :
+      AbstractFilterMafIterator(iterator), output_(out), distProperty_(distProperty), writer_(), extendedSeqNames_(extendedSeqNames)
     {}
 
   private:
-    OutputTreeMafIterator(const OutputTreeMafIterator& iterator) :
+    OutputDistanceMatrixMafIterator(const OutputDistanceMatrixMafIterator& iterator) :
       AbstractFilterMafIterator(0),
       output_(iterator.output_),
-      treeProperty_(iterator.treeProperty_),
+      distProperty_(iterator.distProperty_),
       writer_(),
       extendedSeqNames_(iterator.extendedSeqNames_)
     {}
     
-    OutputTreeMafIterator& operator=(const OutputTreeMafIterator& iterator)
+    OutputDistanceMatrixMafIterator& operator=(const OutputDistanceMatrixMafIterator& iterator)
     {
       output_ = iterator.output_;
-      treeProperty_ = iterator.treeProperty_;
+      distProperty_ = iterator.distProperty_;
       writer_ = iterator.writer_;
       extendedSeqNames_ = iterator.extendedSeqNames_;
       return *this;
@@ -104,10 +96,10 @@ class OutputTreeMafIterator:
 
   private:
     void writeBlock_(std::ostream& out, const MafBlock& block) const;
-    void stripNames_(Node& node) const;
+    void stripNames_(std::vector<std::string>& names) const;
 };
 
 } //end of namespace bpp.
 
-#endif //_OUTPUTTREEMAFITERATOR_H_
+#endif //_OUTPUTDISTANCEMATRIXMAFITERATOR_H_
 

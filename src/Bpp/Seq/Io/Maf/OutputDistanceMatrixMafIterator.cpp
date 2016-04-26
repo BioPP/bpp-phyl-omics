@@ -1,7 +1,7 @@
 //
-// File: OutputTreeMafIterator.cpp
+// File: OutputDistanceMatrixMafIterator.cpp
 // Created by: Julien Dutheil
-// Created on: Jul 24 2012
+// Created on: Apr 26 2016
 //
 
 /*
@@ -37,41 +37,41 @@ The fact that you are presently reading this means that you have had
 knowledge of the CeCILL license and that you accept its terms.
 */
 
-#include "OutputTreeMafIterator.h"
+#include "OutputDistanceMatrixMafIterator.h"
 
 using namespace bpp;
 using namespace std;
 
-void OutputTreeMafIterator::writeBlock_(std::ostream& out, const MafBlock& block) const
+void OutputDistanceMatrixMafIterator::writeBlock_(std::ostream& out, const MafBlock& block) const
 {
   //First get the tree for this block:
-  if (!block.hasProperty(treeProperty_))
-    throw Exception("OutputTreeMafIterator::writeBlock. No property available for " + treeProperty_);
+  if (!block.hasProperty(distProperty_))
+    throw Exception("OutputDistanceMatrixMafIterator::writeBlock. No property available for " + distProperty_);
   try {
     if (extendedSeqNames_) {
-      const Tree& tree = dynamic_cast<const Tree&>(block.getProperty(treeProperty_));
-      writer_.write(tree, out);
+      const DistanceMatrix& mat = dynamic_cast<const DistanceMatrix&>(block.getProperty(distProperty_));
+      writer_.write(mat, out);
     } else {
-      TreeTemplate<Node> tree(dynamic_cast<const Tree&>(block.getProperty(treeProperty_)));
-      stripNames_(*tree.getRootNode());
-      writer_.write(tree, out);
+      DistanceMatrix mat(dynamic_cast<const DistanceMatrix&>(block.getProperty(distProperty_)));
+      vector<string> names = mat.getNames();
+      stripNames_(names);
+      mat.setNames(names);
+      writer_.write(mat, out);
     }
   } catch (bad_cast& e) {
-    throw Exception("OutputTreeMafIterator::writeBlock. A property was found for '" + treeProperty_ + "' but does not appear to contain a phylogenetic tree.");
+    throw Exception("OutputDistanceMatrixMafIterator::writeBlock. A property was found for '" + distProperty_ + "' but does not appear to contain a distance matrix.");
   }
+
+  out << endl << endl;
 }
 
-void OutputTreeMafIterator::stripNames_(Node& node) const
+void OutputDistanceMatrixMafIterator::stripNames_(vector<string>& names) const
 {
-  if (node.hasName()) {
-    string name = node.getName();
-    size_t pos = name.find('.');
+  for (vector<string>::iterator it = names.begin(); it != names.end(); ++it) {
+    size_t pos = it->find('.');
     if (pos != string::npos) {
-      node.setName(name.substr(0, pos));
+      *it = it->substr(0, pos);
     }
-  }
-  for (size_t i = 0; i < node.getNumberOfSons(); ++i) {
-    stripNames_(*node.getSon(i));
   }
 }
 

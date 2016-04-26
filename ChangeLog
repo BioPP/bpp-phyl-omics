@@ -1,3 +1,6 @@
+26/04/16 Julien Dutheil
+* Added distance matrix output filter.
+
 03/03/16 Julien Dutheil
 * Added clock and reprametrization options in model fitting.
 

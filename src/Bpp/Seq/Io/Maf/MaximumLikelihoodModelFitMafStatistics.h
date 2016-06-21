@@ -121,18 +121,26 @@ class MaximumLikelihoodModelFitMafStatistics:
       if (!rootFreqs) {
         init_();
         ApplicationTools::displayMessage("-- Available parameters:");
-        std::vector<std::string> pl = model->getParameters().getParameterNames();
+        std::vector<std::string> pl = model->getIndependentParameters().getParameterNames();
+        for (size_t i = 0; i < pl.size(); ++i) {
+          ApplicationTools::displayMessage("    " + pl[i]);
+        }
+        pl = rDist->getIndependentParameters().getParameterNames();
         for (size_t i = 0; i < pl.size(); ++i) {
           ApplicationTools::displayMessage("    " + pl[i]);
         }
       } else {
         //Otherwise we do not initialize parameters as the tree might change for each block.
         //We therefore have to initialize once for each block.
-        std::vector<std::string> pl = model->getParameters().getParameterNames();
+        std::vector<std::string> pl = model->getIndependentParameters().getParameterNames();
         for (size_t i = 0; i < pl.size(); ++i) {
           ApplicationTools::displayMessage("    " + pl[i] + "_1");
         }
-        pl = rootFreqs->getParameters().getParameterNames();
+        pl = rootFreqs->getIndependentParameters().getParameterNames();
+        for (size_t i = 0; i < pl.size(); ++i) {
+          ApplicationTools::displayMessage("    " + pl[i]);
+        }
+        pl = rDist->getIndependentParameters().getParameterNames();
         for (size_t i = 0; i < pl.size(); ++i) {
           ApplicationTools::displayMessage("    " + pl[i]);
         }
@@ -178,7 +186,11 @@ class MaximumLikelihoodModelFitMafStatistics:
       if (!rootFreqs) {
         init_();
         ApplicationTools::displayMessage("-- Available parameters:");
-        std::vector<std::string> pl = model->getParameters().getParameterNames();
+        std::vector<std::string> pl = model->getIndependentParameters().getParameterNames();
+        for (size_t i = 0; i < pl.size(); ++i) {
+          ApplicationTools::displayMessage("    " + pl[i]);
+        }
+        pl = rDist->getIndependentParameters().getParameterNames();
         for (size_t i = 0; i < pl.size(); ++i) {
           ApplicationTools::displayMessage("    " + pl[i]);
         }
@@ -186,7 +198,11 @@ class MaximumLikelihoodModelFitMafStatistics:
         modelSet_.reset(SubstitutionModelSetTools::createHomogeneousModelSet(model->clone(), rootFreqs->clone(), tree));
         init_();
         ApplicationTools::displayMessage("-- Available parameters:");
-        std::vector<std::string> pl = modelSet_->getParameters().getParameterNames();
+        std::vector<std::string> pl = modelSet_->getIndependentParameters().getParameterNames();
+        for (size_t i = 0; i < pl.size(); ++i) {
+          ApplicationTools::displayMessage("    " + pl[i]);
+        }
+        pl = rDist->getIndependentParameters().getParameterNames();
         for (size_t i = 0; i < pl.size(); ++i) {
           ApplicationTools::displayMessage("    " + pl[i]);
         }

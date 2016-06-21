@@ -73,8 +73,13 @@ void MaximumLikelihoodModelFitMafStatistics::compute(const MafBlock& block)
       throw Exception("MaximumLikelihoodModelFitMafIterator::fitModelBlock. No property available for " + treePropertyIn_);
     try {
       tree = &(dynamic_cast<const Tree&>(block.getProperty(treePropertyIn_)));
-      if (tree->isRooted())
-        throw Exception("MaximumLikelihoodModelFitMafIterator::fitModelBlock. Tree must be unrooted.");
+      if (rootFreqs_.get()) {
+        if (!tree->isRooted())
+          throw Exception("MaximumLikelihoodModelFitMafIterator::fitModelBlock. Tree must be rooted.");
+      } else {
+        if (tree->isRooted())
+          throw Exception("MaximumLikelihoodModelFitMafIterator::fitModelBlock. Tree must be unrooted.");
+      }
     } catch (bad_cast& e) {
       throw Exception("MaximumLikelihoodModelFitMafIterator::fitModelBlock. A property was found for '" + treePropertyIn_ + "' but does not appear to contain a phylogenetic tree.");
     }

@@ -91,13 +91,20 @@ void MaximumLikelihoodModelFitMafStatistics::compute(const MafBlock& block)
   unique_ptr<DiscreteRatesAcrossSitesTreeLikelihood> tl;
   
   if (rootFreqs_.get()) {
+    //Homogeneous, non-stationary
     modelSet_.reset(SubstitutionModelSetTools::createHomogeneousModelSet(model_->clone(), rootFreqs_->clone(), tree)); 
     tl.reset(new RNonHomogeneousTreeLikelihood(*tree, *sites, modelSet_.get(), rDist_.get(), false, true, false));
     //Initialize:
     if (initParameters_.size() == 0)
       init_(); //so far, even if tree changed, parameter names are supposingly the same. This might not be true in some complex cases...
   } else {
-    tl.reset(new RHomogeneousTreeLikelihood(*tree, *sites, model_.get(), rDist_.get(), false, false, true));
+    if (modelSet_.get()) {
+      //Non-homogeneous
+      tl.reset(new RNonHomogeneousTreeLikelihood(*tree, *sites, modelSet_.get(), rDist_.get(), false, true, false));
+    } else {
+      //Homogeneous, stationary
+      tl.reset(new RHomogeneousTreeLikelihood(*tree, *sites, model_.get(), rDist_.get(), false, false, true));
+    }
   }
   tl->initialize();
   tl->setParameters(fixedParameters_);
@@ -116,7 +123,7 @@ void MaximumLikelihoodModelFitMafStatistics::compute(const MafBlock& block)
 }
 
 void MaximumLikelihoodModelFitMafStatistics::init_() {
-  if (rootFreqs_.get()) {
+  if (modelSet_.get()) {
     initParameters_.addParameters(modelSet_->getIndependentParameters());
   } else {
     initParameters_.addParameters(model_->getIndependentParameters());

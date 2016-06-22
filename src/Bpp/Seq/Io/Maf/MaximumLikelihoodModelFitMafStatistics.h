@@ -209,6 +209,52 @@ class MaximumLikelihoodModelFitMafStatistics:
       }
     }
 
+    /**
+     * @brief Build a model fit maf statistic, using non-homogeneous models.
+     *
+     * This analysis use the same input tree for all blocks.
+     *
+     * @param modelSet The substitution model set.
+     * @param rDist The distribution of rates.
+     * @param tree The tree to use for fitting the model.
+     * @param parametersOut Parameters to output. 
+     * @param fixedParameters Parameter which should not be estimated but fixed to the given value instead.
+     * @param reestimateBrLen If the branch length from the tree should be reestimated (otherwise kept as is).
+     * @param propGapsToKeep The maximum gapfrequency in a site to include it in the analysis. 
+     * @param gapsAsUnresolved Tell if gap characters should be considered as unresolved states. In ost cases it should be set to true, as very few substitution models consider gaps as genuine states.
+     * @param useClock Should a ultrametric tree be fitted (global clock)?
+     * @param reparametrize Transform parameters to remove constraints.
+     */
+    MaximumLikelihoodModelFitMafStatistics(
+        SubstitutionModelSet* modelSet,
+        DiscreteDistribution* rDist,
+        const Tree* tree,
+        const std::vector<std::string>& parametersOut,
+        const ParameterList& fixedParameters,
+        bool reestimateBrLen = true,
+        double propGapsToKeep = 0,
+        bool gapsAsUnresolved = true,
+        bool useClock = false,
+        bool reparametrize = false):
+      AbstractMafStatistics(),
+      model_(), modelSet_(modelSet), rDist_(rDist), rootFreqs_(),
+      treePropertyIn_(NO_PROPERTY), tree_(tree), parametersOut_(parametersOut),
+      reestimateBrLen_(reestimateBrLen), propGapsToKeep_(propGapsToKeep), gapsAsUnresolved_(gapsAsUnresolved),
+      useClock_(useClock), reparametrize_(reparametrize),
+      initParameters_(), fixedParameters_(fixedParameters)
+    {
+      init_();
+      ApplicationTools::displayMessage("-- Available parameters:");
+      std::vector<std::string> pl = modelSet_->getIndependentParameters().getParameterNames();
+      for (size_t i = 0; i < pl.size(); ++i) {
+        ApplicationTools::displayMessage("    " + pl[i]);
+      }
+      pl = rDist->getIndependentParameters().getParameterNames();
+      for (size_t i = 0; i < pl.size(); ++i) {
+        ApplicationTools::displayMessage("    " + pl[i]);
+      }
+    }
+
   private:
     MaximumLikelihoodModelFitMafStatistics(const MaximumLikelihoodModelFitMafStatistics& mafstat):
       AbstractMafStatistics(),

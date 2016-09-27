@@ -52,5 +52,3 @@ INSTALL(TARGETS bppphylomics-static bppphylomics-shared DESTINATION lib${LIB_SUF
 # Install headers
 INSTALL(DIRECTORY Bpp/ DESTINATION include/Bpp FILES_MATCHING PATTERN "*.h")
 
-INSTALL(CODE "EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/genIncludes.sh ${CMAKE_PREFIX_PATH}/include/Bpp)")
-

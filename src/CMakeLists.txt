@@ -1,10 +1,14 @@
 # CMake script for Bio++ Phylo(gen)-omics Library
-# Author: Sylvain Gaillard and Julien Dutheil
+# Authors:
+#   Sylvain Gaillard
+#   Julien Dutheil
+#   Francois Gindraud (2017)
 # Created: 08/11/2012
 
-# File list
-SET(CPP_FILES
+set (CPP_FILES
+  Bpp/Seq/Io/Maf/CountClustersMafStatistics.cpp
   Bpp/Seq/Io/Maf/CountDistanceEstimationMafIterator.cpp
+  Bpp/Seq/Io/Maf/DistanceBasedPhylogenyReconstructionMafIterator.cpp
   Bpp/Seq/Io/Maf/MaximumLikelihoodDistanceEstimationMafIterator.cpp
   Bpp/Seq/Io/Maf/MaximumLikelihoodModelFitMafStatistics.cpp
   Bpp/Seq/Io/Maf/DistanceBasedPhylogenyReconstructionMafIterator.cpp
@@ -15,42 +19,48 @@ SET(CPP_FILES
   Bpp/Seq/Io/Maf/CountClustersMafStatistics.cpp
   )
 
-SET(H_FILES
-  Bpp/Seq/Io/Maf/AbstractDistanceEstimationMafIterator.h
-  Bpp/Seq/Io/Maf/CountDistanceEstimationMafIterator.h
-  Bpp/Seq/Io/Maf/MaximumLikelihoodDistanceEstimationMafIterator.h
-  Bpp/Seq/Io/Maf/MaximumLikelihoodModelFitMafStatistics.h
-  Bpp/Seq/Io/Maf/AbstractPhylogenyReconstructionMafIterator.h
-  Bpp/Seq/Io/Maf/DistanceBasedPhylogenyReconstructionMafIterator.h
-  Bpp/Seq/Io/Maf/TreeManipulationMafIterators.h
-  Bpp/Seq/Io/Maf/FilterTreeMafIterator.h
-  Bpp/Seq/Io/Maf/OutputTreeMafIterator.h
-  Bpp/Seq/Io/Maf/OutputDistanceMatrixMafIterator.h
-  Bpp/Seq/Io/Maf/CountClustersMafStatistics.h
-  )
-
 # Build the static lib
-ADD_LIBRARY(bppphylomics-static STATIC ${CPP_FILES})
-SET_TARGET_PROPERTIES(bppphylomics-static
-  PROPERTIES OUTPUT_NAME bpp-phyl-omics
-  CLEAN_DIRECT_OUTPUT 1
+add_library (${PROJECT_NAME}-static STATIC ${CPP_FILES})
+target_include_directories (${PROJECT_NAME}-static PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<INSTALL_INTERFACE:include>
   )
-TARGET_LINK_LIBRARIES(bppphylomics-static ${LIBS})
+set_target_properties (${PROJECT_NAME}-static PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
+target_link_libraries (${PROJECT_NAME}-static ${BPP_LIBS_STATIC})
+target_compile_options (${PROJECT_NAME}-static
+  PUBLIC ${public-compile-options}
+  PRIVATE ${private-compile-options}
+  )
 
 # Build the shared lib
-ADD_LIBRARY(bppphylomics-shared SHARED ${CPP_FILES})
-SET_TARGET_PROPERTIES(bppphylomics-shared
-  PROPERTIES OUTPUT_NAME bpp-phyl-omics
-  CLEAN_DIRECT_OUTPUT 1
-  MACOSX_RPATH 1
-  VERSION ${BPPPHYLOMICS_VERSION}
-  SOVERSION ${BPPPHYLOMICS_VERSION_MAJOR}
+add_library (${PROJECT_NAME}-shared SHARED ${CPP_FILES})
+target_include_directories (${PROJECT_NAME}-shared PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<INSTALL_INTERFACE:include>
   )
-TARGET_LINK_LIBRARIES(bppphylomics-shared ${LIBS})
+set_target_properties (${PROJECT_NAME}-shared
+  PROPERTIES OUTPUT_NAME ${PROJECT_NAME}
+  MACOSX_RPATH 1
+  VERSION ${${PROJECT_NAME}_VERSION}
+  SOVERSION ${${PROJECT_NAME}_VERSION_MAJOR}
+  )
+target_link_libraries (${PROJECT_NAME}-shared ${BPP_LIBS_SHARED})
+target_compile_options (${PROJECT_NAME}-shared
+  PUBLIC ${public-compile-options}
+  PRIVATE ${private-compile-options}
+  )
 
-# Install libs
-INSTALL(TARGETS bppphylomics-static bppphylomics-shared DESTINATION lib${LIB_SUFFIX})
-
-# Install headers
-INSTALL(DIRECTORY Bpp/ DESTINATION include/Bpp FILES_MATCHING PATTERN "*.h")
-
+# Install libs and headers
+install (
+  TARGETS ${PROJECT_NAME}-static ${PROJECT_NAME}-shared
+  EXPORT ${PROJECT_NAME}-targets
+  LIBRARY DESTINATION lib${LIB_SUFFIX}
+  ARCHIVE DESTINATION lib${LIB_SUFFIX}
+  )
+install (
+  DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
+  DESTINATION include
+  FILES_MATCHING PATTERN "*.h"
+  )
+# Install cmake file representing targets
+install (EXPORT ${PROJECT_NAME}-targets DESTINATION ${cmake-package-location})

@@ -5,6 +5,7 @@
 #   Francois Gindraud (2017)
 # Created: 08/11/2012
 
+# File list
 set (CPP_FILES
   Bpp/Seq/Io/Maf/CountClustersMafStatistics.cpp
   Bpp/Seq/Io/Maf/CountDistanceEstimationMafIterator.cpp
@@ -58,7 +59,7 @@ install (
   ARCHIVE DESTINATION lib${LIB_SUFFIX}
   )
 install (
-  DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
+  DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Bpp
   DESTINATION include
   FILES_MATCHING PATTERN "*.h"
   )

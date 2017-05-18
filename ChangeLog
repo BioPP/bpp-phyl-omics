@@ -1,8 +1,10 @@
+10/05/17 -*- Version 2.3.0. -*-
+
 26/04/16 Julien Dutheil
 * Added distance matrix output filter.
 
 03/03/16 Julien Dutheil
-* Added clock and reprametrization options in model fitting.
+* Added clock and reparametrization options in model fitting.
 
 26/09/14 -*- Version 2.2.0. -*-
 

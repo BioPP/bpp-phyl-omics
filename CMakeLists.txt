@@ -36,7 +36,7 @@ ELSE(NO_DEP_CHECK)
 # In other words, the library implements all the interface numbers in the
 # range from number current - age to current.
 SET(${PROJECT_NAME}_VERSION_CURRENT "1")
-SET(${PROJECT_NAME}_VERSION_REVISION "0")
+SET(${PROJECT_NAME}_VERSION_REVISION "1")
 SET(${PROJECT_NAME}_VERSION_AGE "0")
 
 # Effective version number computation

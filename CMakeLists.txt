@@ -35,8 +35,8 @@ ELSE(NO_DEP_CHECK)
 #           library implements.
 # In other words, the library implements all the interface numbers in the
 # range from number current - age to current.
-SET(${PROJECT_NAME}_VERSION_CURRENT "1")
-SET(${PROJECT_NAME}_VERSION_REVISION "1")
+SET(${PROJECT_NAME}_VERSION_CURRENT "2")
+SET(${PROJECT_NAME}_VERSION_REVISION "0")
 SET(${PROJECT_NAME}_VERSION_AGE "0")
 
 # Effective version number computation
@@ -52,11 +52,12 @@ if (CMAKE_INSTALL_PREFIX)
   set (CMAKE_PREFIX_PATH "${CMAKE_INSTALL_PREFIX}" ${CMAKE_PREFIX_PATH})
 endif (CMAKE_INSTALL_PREFIX)
 
-find_package (bpp-seq-omics 1.0.1 REQUIRED)
-find_package (bpp-phyl 9.1.4 REQUIRED)
+include (GNUInstallDirs)
+find_package (bpp-seq-omics 2.0.0 REQUIRED)
+find_package (bpp-phyl 11.0.0 REQUIRED)
 
 # CMake package
-set (cmake-package-location lib/cmake/${PROJECT_NAME})
+set (cmake-package-location ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
 include (CMakePackageConfigHelpers)
 configure_package_config_file (
   package.cmake.in
@@ -95,10 +96,10 @@ ENDIF(NO_DEP_CHECK)
 # Packager
 SET(CPACK_PACKAGE_NAME "libbpp-phyl-omics")
 SET(CPACK_PACKAGE_VENDOR "Bio++ Development Team")
-SET(CPACK_PACKAGE_VERSION "2.3.0")
+SET(CPACK_PACKAGE_VERSION "2.3.1")
 SET(CPACK_PACKAGE_VERSION_MAJOR "2")
 SET(CPACK_PACKAGE_VERSION_MINOR "3")
-SET(CPACK_PACKAGE_VERSION_PATCH "0")
+SET(CPACK_PACKAGE_VERSION_PATCH "1")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "The Bio++ Phylogen-Omics library")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/COPYING.txt")
 SET(CPACK_RESOURCE_FILE_AUTHORS "${CMAKE_SOURCE_DIR}/AUTHORS.txt")

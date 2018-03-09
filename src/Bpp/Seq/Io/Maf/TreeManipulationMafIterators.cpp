@@ -42,7 +42,7 @@ knowledge of the CeCILL license and that you accept its terms.
 using namespace bpp;
 using namespace std;
 
-MafBlock* TreeManipulationMafIterator::analyseCurrentBlock_() throw (Exception)
+MafBlock* TreeManipulationMafIterator::analyseCurrentBlock_()
 {
   currentBlock_ = iterator_->nextBlock();
   if (currentBlock_) {
@@ -60,7 +60,7 @@ MafBlock* TreeManipulationMafIterator::analyseCurrentBlock_() throw (Exception)
 }
 
 
-void NewOutgroupMafIterator::manipulateTree_(TreeTemplate<Node>* tree) throw (Exception)
+void NewOutgroupMafIterator::manipulateTree_(TreeTemplate<Node>* tree)
 {
   vector<Node*> leaves = tree->getLeaves();
   Node* outgroup = 0;
@@ -79,7 +79,7 @@ void NewOutgroupMafIterator::manipulateTree_(TreeTemplate<Node>* tree) throw (Ex
 }
 
 
-void DropSpeciesMafIterator::manipulateTree_(TreeTemplate<Node>* tree) throw (Exception)
+void DropSpeciesMafIterator::manipulateTree_(TreeTemplate<Node>* tree)
 {
   vector<Node*> leaves = tree->getLeaves();
   for (size_t i = 0; i < leaves.size(); ++i) {

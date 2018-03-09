@@ -42,7 +42,7 @@ knowledge of the CeCILL license and that you accept its terms.
 using namespace bpp;
 using namespace std;
 
-MafBlock* FilterTreeMafIterator::analyseCurrentBlock_() throw (Exception)
+MafBlock* FilterTreeMafIterator::analyseCurrentBlock_()
 {
   bool test = false;
   currentBlock_ = iterator_->nextBlock();

@@ -1,3 +1,9 @@
+09/03/18 -*- Version 2.4.0 -*-
+
+09/03/18 Julien Dutheil
+* Removed all dynamic exception specifications
+* Increased interface number.
+
 10/12/17 -*- Version 2.3.2 -*-
 
 10/05/17 -*- Version 2.3.0. -*-

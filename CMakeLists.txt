@@ -35,7 +35,7 @@ ELSE(NO_DEP_CHECK)
 #           library implements.
 # In other words, the library implements all the interface numbers in the
 # range from number current - age to current.
-SET(${PROJECT_NAME}_VERSION_CURRENT "2")
+SET(${PROJECT_NAME}_VERSION_CURRENT "3")
 SET(${PROJECT_NAME}_VERSION_REVISION "0")
 SET(${PROJECT_NAME}_VERSION_AGE "0")
 
@@ -53,8 +53,8 @@ if (CMAKE_INSTALL_PREFIX)
 endif (CMAKE_INSTALL_PREFIX)
 
 include (GNUInstallDirs)
-find_package (bpp-seq-omics 2.0.0 REQUIRED)
-find_package (bpp-phyl 11.0.0 REQUIRED)
+find_package (bpp-seq-omics 3.0.0 REQUIRED)
+find_package (bpp-phyl 12.0.0 REQUIRED)
 
 # CMake package
 set (cmake-package-location ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME})
@@ -96,10 +96,10 @@ ENDIF(NO_DEP_CHECK)
 # Packager
 SET(CPACK_PACKAGE_NAME "libbpp-phyl-omics")
 SET(CPACK_PACKAGE_VENDOR "Bio++ Development Team")
-SET(CPACK_PACKAGE_VERSION "2.3.1")
+SET(CPACK_PACKAGE_VERSION "2.4.0")
 SET(CPACK_PACKAGE_VERSION_MAJOR "2")
-SET(CPACK_PACKAGE_VERSION_MINOR "3")
-SET(CPACK_PACKAGE_VERSION_PATCH "1")
+SET(CPACK_PACKAGE_VERSION_MINOR "4")
+SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "The Bio++ Phylogen-Omics library")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/COPYING.txt")
 SET(CPACK_RESOURCE_FILE_AUTHORS "${CMAKE_SOURCE_DIR}/AUTHORS.txt")
@@ -108,6 +108,8 @@ SET(CPACK_SOURCE_GENERATOR "TGZ")
 # /!\ This assumes that an external build is used
 SET(CPACK_SOURCE_IGNORE_FILES 
        "/build/" 
+       "/html/"
+       "/BppPhylOmics.tag" 
        "/\\\\.git/" 
        "/\\\\.gitignore" 
        ${CPACK_SOURCE_IGNORE_FILES}

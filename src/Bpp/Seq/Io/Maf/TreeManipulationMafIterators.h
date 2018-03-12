@@ -64,10 +64,10 @@ class TreeManipulationMafIterator:
     {}
 
   public:
-    MafBlock* analyseCurrentBlock_() throw (Exception);
+    MafBlock* analyseCurrentBlock_();
 
   protected:
-    virtual void manipulateTree_(TreeTemplate<Node>* tree) throw (Exception) = 0;
+    virtual void manipulateTree_(TreeTemplate<Node>* tree) = 0;
 
 };
 
@@ -89,7 +89,7 @@ class NewOutgroupMafIterator:
     {}
 
   private:
-    void manipulateTree_(TreeTemplate<Node>* tree) throw (Exception);
+    void manipulateTree_(TreeTemplate<Node>* tree);
 
 };
 
@@ -111,7 +111,7 @@ class DropSpeciesMafIterator:
     {}
 
   private:
-    void manipulateTree_(TreeTemplate<Node>* tree) throw (Exception);
+    void manipulateTree_(TreeTemplate<Node>* tree);
 
 };
 

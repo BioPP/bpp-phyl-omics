@@ -44,7 +44,7 @@ knowledge of the CeCILL license and that you accept its terms.
 using namespace bpp;
 using namespace std;
 
-Tree* DistanceBasedPhylogenyReconstructionMafIterator::buildTreeForBlock(const MafBlock& block) throw (Exception)
+Tree* DistanceBasedPhylogenyReconstructionMafIterator::buildTreeForBlock(const MafBlock& block)
 {
   //First get the distance matrix for this block:
   if (!block.hasProperty(distanceProperty_))

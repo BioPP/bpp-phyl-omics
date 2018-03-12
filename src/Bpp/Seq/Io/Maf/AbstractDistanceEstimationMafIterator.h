@@ -69,7 +69,7 @@ class AbstractDistanceEstimationMafIterator:
     {}
 
   private:
-    MafBlock* analyseCurrentBlock_() throw (Exception)
+    MafBlock* analyseCurrentBlock_()
     {
       MafBlock* block = iterator_->nextBlock();
       if (!block) return 0;

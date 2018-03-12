@@ -79,7 +79,7 @@ class DistanceBasedPhylogenyReconstructionMafIterator:
     const std::string& getDistanceProperty() const { return distanceProperty_; }
 
     std::string getPropertyName() const { return builder_->getName(); }
-    Tree* buildTreeForBlock(const MafBlock& block) throw (Exception);
+    Tree* buildTreeForBlock(const MafBlock& block);
 };
 
 } //end of namespace bpp.

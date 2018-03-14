@@ -1,34 +1,31 @@
-%define _basename bpp-phyl-omics
-%define _version 2.3.1
-%define _release 1
 %define _prefix /usr
 
-URL: http://biopp.univ-montp2.fr/
+URL: https://github.com/BioPP/bpp-phyl-omics
 
-Name: %{_basename}
-Version: %{_version}
-Release: %{_release}
+Name: bpp-phyl-omics
+Version: 2.4.0
+Release: 1%{?dist}
 License: CECILL-2.0
 Vendor: The Bio++ Project
-Source: http://biopp.univ-montp2.fr/repos/sources/%{_basename}-%{_version}.tar.gz
+Source: %{name}-%{version}.tar.gz
 Summary: Bio++ Sequence library: genomics components
 Group: Development/Libraries/C and C++
-Requires: bpp-core = %{_version}
-Requires: bpp-seq = %{_version}
-Requires: bpp-phyl = %{_version}
-Requires: bpp-seq-omics = %{_version}
+Requires: bpp-core = %{version}
+Requires: bpp-seq = %{version}
+Requires: bpp-phyl = %{version}
+Requires: bpp-seq-omics = %{version}
 
-BuildRoot: %{_builddir}/%{_basename}-root
+BuildRoot: %{_builddir}/%{name}-root
 BuildRequires: cmake >= 2.8.11
 BuildRequires: gcc-c++ >= 4.7.0
-BuildRequires: libbpp-core3 = %{_version}
-BuildRequires: libbpp-core-devel = %{_version}
-BuildRequires: libbpp-seq11 = %{_version}
-BuildRequires: libbpp-seq-devel = %{_version}
-BuildRequires: libbpp-phyl11 = %{_version}
-BuildRequires: libbpp-phyl-devel = %{_version}
-BuildRequires: libbpp-seq-omics2 = %{_version}
-BuildRequires: libbpp-seq-omics-devel = %{_version}
+BuildRequires: libbpp-core4 = %{version}
+BuildRequires: libbpp-core-devel = %{version}
+BuildRequires: libbpp-seq12 = %{version}
+BuildRequires: libbpp-seq-devel = %{version}
+BuildRequires: libbpp-phyl12 = %{version}
+BuildRequires: libbpp-phyl-devel = %{version}
+BuildRequires: libbpp-seq-omics3 = %{version}
+BuildRequires: libbpp-seq-omics-devel = %{version}
 
 AutoReq: yes
 AutoProv: yes
@@ -37,30 +34,30 @@ AutoProv: yes
 This library contains the genomics components of the Bio++ phylogenetics library.
 It is part of the Bio++ project.
 
-%package -n libbpp-phyl-omics2
+%package -n libbpp-phyl-omics3
 Summary: Bio++ Phylogenetics library: genomics components
 Group: Development/Libraries/C and C++
 
-%description -n libbpp-phyl-omics2
+%description -n libbpp-phyl-omics3
 This library contains the genomics components of the Bio++ phylogenetics library.
 It is part of the Bio++ project.
 
 %package -n libbpp-phyl-omics-devel
 Summary: Bio++ Phylogenetics library: genomics components
 Group: Development/Libraries/C and C++
-Requires: libbpp-phyl-omics2 = %{_version}
-Requires: libbpp-seq11 = %{_version}
-Requires: libbpp-seq-devel = %{_version}
-Requires: libbpp-core3 = %{_version}
-Requires: libbpp-core-devel = %{_version}
-Requires: libbpp-phyl11 = %{_version}
-Requires: libbpp-phyl-devel = %{_version}
-Requires: libbpp-seq-omics2 = %{_version}
-Requires: libbpp-seq-omics-devel = %{_version}
+Requires: libbpp-phyl-omics3 = %{version}
+Requires: libbpp-seq12 = %{version}
+Requires: libbpp-seq-devel = %{version}
+Requires: libbpp-core4 = %{version}
+Requires: libbpp-core-devel = %{version}
+Requires: libbpp-phyl12 = %{version}
+Requires: libbpp-phyl-devel = %{version}
+Requires: libbpp-seq-omics3 = %{version}
+Requires: libbpp-seq-omics-devel = %{version}
 
 %description -n libbpp-phyl-omics-devel
 The libbpp-phyl-omics-devel package contains the header files and static libraries for
-building applications which use %{_basename}.
+building applications which use %{name}.
 
 %prep
 %setup -q
@@ -77,11 +74,11 @@ make DESTDIR=$RPM_BUILD_ROOT install
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -n libbpp-phyl-omics2 -p /sbin/ldconfig
+%post -n libbpp-phyl-omics3 -p /sbin/ldconfig
 
-%postun -n libbpp-phyl-omics2 -p /sbin/ldconfig
+%postun -n libbpp-phyl-omics3 -p /sbin/ldconfig
 
-%files -n libbpp-phyl-omics2
+%files -n libbpp-phyl-omics3
 %defattr(-,root,root)
 %doc AUTHORS.txt COPYING.txt INSTALL.txt ChangeLog
 %{_prefix}/%{_lib}/lib*.so.*
@@ -97,6 +94,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/include/*
 
 %changelog
+* Mon Mar 12 2018 Julien Dutheil <julien.dutheil@univ-montp2.fr> 2.4.0-1
+- Increased interface number
+- Removed dynamic exceptions specifications.
 * Tue Jun 06 2017 Julien Dutheil <julien.dutheil@univ-montp2.fr> 2.3.1-1
 - Increased interface number
 * Wed May 10 2017 Julien Dutheil <julien.dutheil@univ-montp2.fr> 2.3.0-1

@@ -87,7 +87,7 @@ class OutputDistanceMatrixMafIterator:
 
 
   public:
-    MafBlock* analyseCurrentBlock_() throw (Exception) {
+    MafBlock* analyseCurrentBlock_() {
       currentBlock_ = iterator_->nextBlock();
       if (output_ && currentBlock_)
         writeBlock_(*output_, *currentBlock_);

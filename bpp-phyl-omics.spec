@@ -3,7 +3,7 @@
 URL: https://github.com/BioPP/bpp-phyl-omics
 
 Name: bpp-phyl-omics
-Version: 2.4.0
+Version: 2.4.1
 Release: 1%{?dist}
 License: CECILL-2.0
 Vendor: The Bio++ Project
@@ -94,6 +94,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/include/*
 
 %changelog
+* Wed Aug 13 2018 Julien Dutheil <julien.dutheil@univ-montp2.fr> 2.4.1-1
+- Compatibility update gcc8
 * Mon Mar 12 2018 Julien Dutheil <julien.dutheil@univ-montp2.fr> 2.4.0-1
 - Increased interface number
 - Removed dynamic exceptions specifications.

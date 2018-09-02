@@ -51,7 +51,7 @@ knowledge of the CeCILL license and that you accept its terms.
 namespace bpp {
 
 /**
- * @brief This iterator print an attached tree to a newick file.
+ * @brief This iterator print an attached distance matrix in phylip format.
  */
 class OutputDistanceMatrixMafIterator:
   public AbstractFilterMafIterator

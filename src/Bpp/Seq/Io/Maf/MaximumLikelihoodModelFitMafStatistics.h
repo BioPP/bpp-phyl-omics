@@ -46,7 +46,7 @@ knowledge of the CeCILL license and that you accept its terms.
 //From bpp-phyl:
 #include <Bpp/Phyl/Model/SubstitutionModel.h>
 #include <Bpp/Phyl/Model/SubstitutionModelSetTools.h>
-#include <Bpp/Phyl/Model/FrequenciesSet/NucleotideFrequenciesSet.h>
+#include <Bpp/Phyl/Model/FrequencySet/NucleotideFrequencySet.h>
 #include <Bpp/Phyl/Tree.h>
 #include <Bpp/Phyl/Likelihood/DiscreteRatesAcrossSitesTreeLikelihood.h>
 
@@ -69,7 +69,7 @@ class MaximumLikelihoodModelFitMafStatistics:
     std::unique_ptr<SubstitutionModel> model_;
     std::unique_ptr<SubstitutionModelSet> modelSet_; //Only used in case of non-stationary model.
     std::unique_ptr<DiscreteDistribution> rDist_;
-    std::unique_ptr<NucleotideFrequenciesSet> rootFreqs_;
+    std::unique_ptr<NucleotideFrequencySet> rootFreqs_;
     std::string treePropertyIn_;
     std::unique_ptr<const Tree> tree_;
     std::vector<std::string> parametersOut_;
@@ -102,7 +102,7 @@ class MaximumLikelihoodModelFitMafStatistics:
     MaximumLikelihoodModelFitMafStatistics(
         SubstitutionModel* model,
         DiscreteDistribution* rDist,
-        NucleotideFrequenciesSet* rootFreqs,
+        NucleotideFrequencySet* rootFreqs,
         const std::string& treePropertyIn,
         const std::vector<std::string>& parametersOut,
         const ParameterList& fixedParameters,
@@ -167,7 +167,7 @@ class MaximumLikelihoodModelFitMafStatistics:
     MaximumLikelihoodModelFitMafStatistics(
         SubstitutionModel* model,
         DiscreteDistribution* rDist,
-        NucleotideFrequenciesSet* rootFreqs,
+        NucleotideFrequencySet* rootFreqs,
         const Tree* tree,
         const std::vector<std::string>& parametersOut,
         const ParameterList& fixedParameters,

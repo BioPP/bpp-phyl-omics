@@ -50,13 +50,13 @@ void OutputDistanceMatrixMafIterator::writeBlock_(std::ostream& out, const MafBl
   try {
     if (extendedSeqNames_) {
       const DistanceMatrix& mat = dynamic_cast<const DistanceMatrix&>(block.getProperty(distProperty_));
-      writer_.write(mat, out);
+      writer_.writeDistanceMatrix(mat, out);
     } else {
       DistanceMatrix mat(dynamic_cast<const DistanceMatrix&>(block.getProperty(distProperty_)));
       vector<string> names = mat.getNames();
       stripNames_(names);
       mat.setNames(names);
-      writer_.write(mat, out);
+      writer_.writeDistanceMatrix(mat, out);
     }
   } catch (bad_cast& e) {
     throw Exception("OutputDistanceMatrixMafIterator::writeBlock. A property was found for '" + distProperty_ + "' but does not appear to contain a distance matrix.");

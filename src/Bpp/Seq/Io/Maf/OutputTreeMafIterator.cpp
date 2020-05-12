@@ -50,11 +50,11 @@ void OutputTreeMafIterator::writeBlock_(std::ostream& out, const MafBlock& block
   try {
     if (extendedSeqNames_) {
       const Tree& tree = dynamic_cast<const Tree&>(block.getProperty(treeProperty_));
-      writer_.write(tree, out);
+      writer_.writeTree(tree, out);
     } else {
       TreeTemplate<Node> tree(dynamic_cast<const Tree&>(block.getProperty(treeProperty_)));
       stripNames_(*tree.getRootNode());
-      writer_.write(tree, out);
+      writer_.writeTree(tree, out);
     }
   } catch (bad_cast& e) {
     throw Exception("OutputTreeMafIterator::writeBlock. A property was found for '" + treeProperty_ + "' but does not appear to contain a phylogenetic tree.");

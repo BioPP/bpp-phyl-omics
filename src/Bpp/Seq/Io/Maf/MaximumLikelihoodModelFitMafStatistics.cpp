@@ -43,9 +43,8 @@ knowledge of the CeCILL license and that you accept its terms.
 #include <Bpp/Seq/Container/SiteContainerTools.h>
 
 //From bpp-phyl:
-#include <Bpp/Phyl/Likelihood/RHomogeneousTreeLikelihood.h>
-#include <Bpp/Phyl/Likelihood/RNonHomogeneousTreeLikelihood.h>
-#include <Bpp/Phyl/Model/SubstitutionModelSetTools.h>
+#include <Bpp/Phyl/Tree/PhyloTreeTools.h>
+#include <Bpp/Phyl/Likelihood/PhyloLikelihoods/SingleProcessPhyloLikelihood.h>
 #include <Bpp/Phyl/OptimizationTools.h>
 
 using namespace bpp;
@@ -66,14 +65,14 @@ void MaximumLikelihoodModelFitMafStatistics::compute(const MafBlock& block)
     SiteContainerTools::changeGapsToUnknownCharacters(*sites);
 
   //Second we get the tree:
-  const Tree* tree = 0;
+  const TreeTemplate<Node>* tree = 0;
   if (!tree_.get()) {
     //No default tree is given, we try to retrieve one from the block:
     if (!block.hasProperty(treePropertyIn_))
       throw Exception("MaximumLikelihoodModelFitMafIterator::fitModelBlock. No property available for " + treePropertyIn_);
     try {
-      tree = &(dynamic_cast<const Tree&>(block.getProperty(treePropertyIn_)));
-      if (rootFreqs_.get()) {
+      tree = &(dynamic_cast<const TreeTemplate<Node>&>(block.getProperty(treePropertyIn_)));
+      if (process_->hasRootFrequencySet()) {
         if (!tree->isRooted())
           throw Exception("MaximumLikelihoodModelFitMafIterator::fitModelBlock. Tree must be rooted.");
       } else {
@@ -86,50 +85,39 @@ void MaximumLikelihoodModelFitMafStatistics::compute(const MafBlock& block)
   } else {
     tree = tree_.get();
   }
+  //Convert to PhyloTree:
+  shared_ptr<PhyloTree> phyloTree = PhyloTreeTools::buildFromTreeTemplate(*tree);
+  process_->setPhyloTree(*phyloTree);
+  
 
   //We build a new TreeLikelihood object:
-  unique_ptr<DiscreteRatesAcrossSitesTreeLikelihood> tl;
+  Context context;
+  auto lik = std::make_shared<LikelihoodCalculationSingleProcess>(context, *sites, *process_);
+  unique_ptr<PhyloLikelihood> treeLik(new SingleProcessPhyloLikelihood(context, lik));
   
-  if (rootFreqs_.get()) {
-    //Homogeneous, non-stationary
-    modelSet_.reset(SubstitutionModelSetTools::createHomogeneousModelSet(model_->clone(), rootFreqs_->clone(), tree)); 
-    tl.reset(new RNonHomogeneousTreeLikelihood(*tree, *sites, modelSet_.get(), rDist_.get(), false, true, false));
-    //Initialize:
-    if (initParameters_.size() == 0)
-      init_(); //so far, even if tree changed, parameter names are supposingly the same. This might not be true in some complex cases...
-  } else {
-    if (modelSet_.get()) {
-      //Non-homogeneous
-      tl.reset(new RNonHomogeneousTreeLikelihood(*tree, *sites, modelSet_.get(), rDist_.get(), false, true, false));
-    } else {
-      //Homogeneous, stationary
-      tl.reset(new RHomogeneousTreeLikelihood(*tree, *sites, model_.get(), rDist_.get(), false, false, true));
-    }
-  }
-  tl->initialize();
-  tl->setParameters(fixedParameters_);
+  treeLik->setParameters(fixedParameters_);
   
   //We optimize parameters:
   ParameterList initParameters = initParameters_;
   if (reestimateBrLen_)
-    initParameters.addParameters(tl->getBranchLengthsParameters());
-  unsigned int nbIt = OptimizationTools::optimizeNumericalParameters2(tl.get(), initParameters, 0, 0.000001, 10000, 0, 0, reparametrize_, useClock_, 0);
+    initParameters.addParameters(treeLik->getBranchLengthParameters());
+  unsigned int nbIt = OptimizationTools::optimizeNumericalParameters2(treeLik.get(), initParameters, 0, 0.000001, 10000, 0, 0, reparametrize_, useClock_, 0);
 
   //And we save interesting parameter values:
   result_.setValue("NbIterations", static_cast<double>(nbIt));
   for (size_t i = 0;i < parametersOut_.size(); ++i) {
-    result_.setValue(parametersOut_[i], tl->getParameterValue(parametersOut_[i]));
+    result_.setValue(parametersOut_[i], treeLik->getParameterValue(parametersOut_[i]));
   }
 }
 
 void MaximumLikelihoodModelFitMafStatistics::init_() {
-  if (modelSet_.get()) {
-    initParameters_.addParameters(modelSet_->getIndependentParameters());
-  } else {
-    initParameters_.addParameters(model_->getIndependentParameters());
-  }
-  initParameters_.addParameters(rDist_->getIndependentParameters());
+  initParameters_.addParameters(process_->getIndependentParameters());
   //Remove from initParameters the ones to consider fixed:
   initParameters_.deleteParameters(fixedParameters_.getParameterNames());
- }
+  ApplicationTools::displayMessage("-- Available parameters:");
+  std::vector<std::string> pl = process_->getIndependentParameters().getParameterNames();
+  for (auto p: pl) {
+    ApplicationTools::displayMessage("    " + p);
+  }
+}
 

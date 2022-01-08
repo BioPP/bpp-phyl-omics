@@ -41,7 +41,7 @@ knowledge of the CeCILL license and that you accept its terms.
 #define _ABSTRACTPHYLOGENYRECONSTRUCTIONMAFITERATOR_H_
 
 #include <Bpp/Seq/Io/Maf/MafIterator.h>
-#include <Bpp/Phyl/Tree.h>
+#include <Bpp/Phyl/Tree/Tree.h>
 
 namespace bpp {
 

@@ -43,7 +43,7 @@ knowledge of the CeCILL license and that you accept its terms.
 #include <Bpp/Seq/Io/Maf/MafStatistics.h>
 
 //From bpp-phyl:
-#include <Bpp/Phyl/Node.h>
+#include <Bpp/Phyl/Tree/Node.h>
 
 //From the STL:
 #include <map>

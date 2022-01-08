@@ -43,7 +43,7 @@ knowledge of the CeCILL license and that you accept its terms.
 #include <Bpp/Seq/Io/Maf/MafIterator.h>
 
 //From bpp-phyl:
-#include <Bpp/Phyl/Tree.h>
+#include <Bpp/Phyl/Tree/Tree.h>
 #include <Bpp/Phyl/Io/Newick.h>
 
 namespace bpp {

@@ -43,7 +43,7 @@ knowledge of the CeCILL license and that you accept its terms.
 #include <Bpp/Seq/Container/SiteContainerTools.h>
 
 //From bpp-phyl:
-#include <Bpp/Phyl/TreeTemplate.h>
+#include <Bpp/Phyl/Tree/TreeTemplate.h>
 
 using namespace bpp;
 using namespace std;

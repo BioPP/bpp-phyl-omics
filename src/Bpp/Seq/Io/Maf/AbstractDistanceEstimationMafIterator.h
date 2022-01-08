@@ -42,7 +42,7 @@ knowledge of the CeCILL license and that you accept its terms.
 
 #include <Bpp/Seq/Io/Maf/MafIterator.h>
 #include <Bpp/Seq/Container/SiteContainer.h>
-#include <Bpp/Phyl/Tree.h>
+#include <Bpp/Phyl/Tree/Tree.h>
 #include <Bpp/Phyl/Distance/DistanceEstimation.h>
 #include <Bpp/Phyl/Distance/PGMA.h>
 #include <Bpp/Phyl/Io/Newick.h>

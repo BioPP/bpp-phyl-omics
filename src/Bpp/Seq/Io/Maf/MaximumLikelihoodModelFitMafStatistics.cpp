@@ -69,18 +69,18 @@ void MaximumLikelihoodModelFitMafStatistics::compute(const MafBlock& block)
   if (!tree_.get()) {
     //No default tree is given, we try to retrieve one from the block:
     if (!block.hasProperty(treePropertyIn_))
-      throw Exception("MaximumLikelihoodModelFitMafIterator::fitModelBlock. No property available for " + treePropertyIn_);
+      throw Exception("MaximumLikelihoodModelFitMafStatistics::fitModelBlock. No property available for " + treePropertyIn_);
     try {
       tree = &(dynamic_cast<const TreeTemplate<Node>&>(block.getProperty(treePropertyIn_)));
       if (process_->hasRootFrequencySet()) {
         if (!tree->isRooted())
-          throw Exception("MaximumLikelihoodModelFitMafIterator::fitModelBlock. Tree must be rooted.");
+          throw Exception("MaximumLikelihoodModelFitMafStatistics::fitModelBlock. Tree must be rooted.");
       } else {
         if (tree->isRooted())
-          throw Exception("MaximumLikelihoodModelFitMafIterator::fitModelBlock. Tree must be unrooted.");
+          throw Exception("MaximumLikelihoodModelFitMafStatistics::fitModelBlock. Tree must be unrooted.");
       }
     } catch (bad_cast& e) {
-      throw Exception("MaximumLikelihoodModelFitMafIterator::fitModelBlock. A property was found for '" + treePropertyIn_ + "' but does not appear to contain a phylogenetic tree.");
+      throw Exception("MaximumLikelihoodModelFitMafStatistics::fitModelBlock. A property was found for '" + treePropertyIn_ + "' but does not appear to contain a phylogenetic tree.");
     }
   } else {
     tree = tree_.get();

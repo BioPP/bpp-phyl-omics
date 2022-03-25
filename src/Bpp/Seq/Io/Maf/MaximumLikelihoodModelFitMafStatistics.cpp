@@ -58,7 +58,7 @@ void MaximumLikelihoodModelFitMafStatistics::compute(const MafBlock& block)
   unique_ptr<SiteContainer> sites(SiteContainerTools::removeGapSites(block.getAlignment(), propGapsToKeep_));
   //Update names if needed:
   if (tree_.get()) {
-    sites->setSequencesNames(block.getSpeciesList(), true);
+    sites->setSequenceNames(block.getSpeciesList(), true);
   }
 
   if (gapsAsUnresolved_)

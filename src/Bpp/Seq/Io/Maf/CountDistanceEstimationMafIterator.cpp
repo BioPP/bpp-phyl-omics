@@ -43,9 +43,10 @@ knowledge of the CeCILL license and that you accept its terms.
 
 using namespace bpp;
 
-DistanceMatrix* CountDistanceEstimationMafIterator::estimateDistanceMatrixForBlock(const MafBlock& block)
+std::unique_ptr<DistanceMatrix> CountDistanceEstimationMafIterator::estimateDistanceMatrixForBlock(const MafBlock& block)
 {
-  DistanceMatrix* dist = SiteContainerTools::computeSimilarityMatrix(block.getAlignment(), true, gapOption_, unresolvedAsGap_);
+  auto aln = block.getAlignment();
+  auto dist = SiteContainerTools::computeSimilarityMatrix(*aln, true, gapOption_, unresolvedAsGap_);
   return dist;
 }
 

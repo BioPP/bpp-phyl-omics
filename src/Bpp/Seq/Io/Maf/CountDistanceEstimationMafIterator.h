@@ -64,14 +64,19 @@ class CountDistanceEstimationMafIterator:
      * @param unresolvedAsGap Tell if unresolved characters should be considered as gaps. Option forawarded to the computeSimilarityMatrix method.
      * @param addCoordinatesInSequenceNames Should full sequence coordinates be included in the sequence name in the output matrix?
      */
-    CountDistanceEstimationMafIterator(MafIterator* iterator, const std::string& gapOption, bool unresolvedAsGap, bool addCoordinatesInSequenceNames = true):
+    CountDistanceEstimationMafIterator(
+        std::shared_ptr<MafIteratorInterface> iterator,
+       	const std::string& gapOption,
+       	bool unresolvedAsGap,
+       	bool addCoordinatesInSequenceNames = true):
       AbstractDistanceEstimationMafIterator(iterator, addCoordinatesInSequenceNames),
-      gapOption_(gapOption), unresolvedAsGap_(unresolvedAsGap)
+      gapOption_(gapOption),
+      unresolvedAsGap_(unresolvedAsGap)
     {}
     
   public:
     std::string getPropertyName() const { return "CountDistance"; }
-    DistanceMatrix* estimateDistanceMatrixForBlock(const MafBlock& block);
+    std::unique_ptr<DistanceMatrix> estimateDistanceMatrixForBlock(const MafBlock& block);
 
 };
 

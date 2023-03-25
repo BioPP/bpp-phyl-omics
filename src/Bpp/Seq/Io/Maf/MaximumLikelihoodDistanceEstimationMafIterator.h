@@ -72,15 +72,19 @@ class MaximumLikelihoodDistanceEstimationMafIterator:
      * @param addCoordinatesInSequenceNames Should full sequence coordinates be included in the sequence name in the output matrix?
      * @param verbose Tell if some information should be output in the default message stream.
      */
-    MaximumLikelihoodDistanceEstimationMafIterator(MafIterator* iterator,
-        DistanceEstimation* distEst,
+    MaximumLikelihoodDistanceEstimationMafIterator(
+	std::shared_ptr<MafIteratorInterface> iterator,
+        std::unique_ptr<DistanceEstimation> distEst,
         double propGapsToKeep = 0,
         bool gapsAsUnresolved = true,
         const string& paramOpt = OptimizationTools::DISTANCEMETHOD_INIT,
         bool addCoordinatesInSequenceNames = true,
         bool verbose = true):
       AbstractDistanceEstimationMafIterator(iterator, addCoordinatesInSequenceNames),
-      distEst_(distEst), propGapsToKeep_(propGapsToKeep), gapsAsUnresolved_(gapsAsUnresolved), paramOpt_(paramOpt)
+      distEst_(move(distEst)),
+      propGapsToKeep_(propGapsToKeep),
+      gapsAsUnresolved_(gapsAsUnresolved),
+      paramOpt_(paramOpt)
     {
       setVerbose(verbose);
       distEst_->setVerbose(verbose ? 3 : 0);
@@ -89,8 +93,10 @@ class MaximumLikelihoodDistanceEstimationMafIterator:
   private:
     MaximumLikelihoodDistanceEstimationMafIterator(const MaximumLikelihoodDistanceEstimationMafIterator& iterator):
       AbstractDistanceEstimationMafIterator(0, true),
-      distEst_(), propGapsToKeep_(iterator.propGapsToKeep_),
-      gapsAsUnresolved_(iterator.gapsAsUnresolved_), paramOpt_(iterator.paramOpt_)
+      distEst_(),
+      propGapsToKeep_(iterator.propGapsToKeep_),
+      gapsAsUnresolved_(iterator.gapsAsUnresolved_),
+      paramOpt_(iterator.paramOpt_)
     {}
     
     MaximumLikelihoodDistanceEstimationMafIterator& operator=(const MaximumLikelihoodDistanceEstimationMafIterator& iterator)
@@ -104,7 +110,7 @@ class MaximumLikelihoodDistanceEstimationMafIterator:
       
   public:
     std::string getPropertyName() const { return "MLDistance"; }
-    DistanceMatrix* estimateDistanceMatrixForBlock(const MafBlock& block);
+    std::unique_ptr<DistanceMatrix> estimateDistanceMatrixForBlock(const MafBlock& block);
 
 };
 

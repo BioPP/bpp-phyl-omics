@@ -40,7 +40,7 @@ knowledge of the CeCILL license and that you accept its terms.
 #ifndef _FILTERTREEMAFITERATOR_H_
 #define _FILTERTREEMAFITERATOR_H_
 
-#include <Bpp/Seq/Io/Maf/MafIterator.h>
+#include <Bpp/Seq/Io/Maf/AbstractMafIterator.h>
 
 //From bpp-phyl:
 #include <Bpp/Phyl/Tree/Tree.h>
@@ -55,17 +55,25 @@ namespace bpp {
  */
 class FilterTreeMafIterator:
   public AbstractFilterMafIterator,
-  public virtual MafTrashIterator
+  public virtual MafTrashIteratorInterface
 {
   private:
     std::string treeProperty_;
     double maxBrLen_;
-    std::deque<MafBlock*> trashBuffer_;
+    std::deque<std::unique_ptr<MafBlock>> trashBuffer_;
     bool keepTrashedBlocks_;
 
   public:
-    FilterTreeMafIterator(MafIterator* iterator, const std::string& treeProperty, double maxBrLen, bool keepTrashedBlocks) :
-      AbstractFilterMafIterator(iterator), treeProperty_(treeProperty), maxBrLen_(maxBrLen), trashBuffer_(), keepTrashedBlocks_(keepTrashedBlocks)
+    FilterTreeMafIterator(
+	std::shared_ptr<MafIteratorInterface> iterator,
+       	const std::string& treeProperty,
+       	double maxBrLen,
+       	bool keepTrashedBlocks) :
+      AbstractFilterMafIterator(iterator),
+      treeProperty_(treeProperty),
+      maxBrLen_(maxBrLen),
+      trashBuffer_(),
+      keepTrashedBlocks_(keepTrashedBlocks)
     {}
 
   private:
@@ -73,7 +81,7 @@ class FilterTreeMafIterator:
       AbstractFilterMafIterator(0),
       treeProperty_(iterator.treeProperty_),
       maxBrLen_(iterator.maxBrLen_),
-      trashBuffer_(iterator.trashBuffer_),
+      trashBuffer_(),
       keepTrashedBlocks_(iterator.keepTrashedBlocks_)
     {}
     
@@ -81,18 +89,18 @@ class FilterTreeMafIterator:
     {
       treeProperty_      = iterator.treeProperty_;
       maxBrLen_          = iterator.maxBrLen_;
-      trashBuffer_       = iterator.trashBuffer_;
+      trashBuffer_.clear();
       keepTrashedBlocks_ = iterator.keepTrashedBlocks_;
       return *this;
     }
 
 
   public:
-    MafBlock* analyseCurrentBlock_();
+    std::unique_ptr<MafBlock> analyseCurrentBlock_();
 
-    MafBlock* nextRemovedBlock() {
-      if (trashBuffer_.size() == 0) return 0;
-      MafBlock* block = trashBuffer_.front();
+    std::unique_ptr<MafBlock> nextRemovedBlock() {
+      if (trashBuffer_.size() == 0) return nullptr;
+      auto block = move(trashBuffer_.front());
       trashBuffer_.pop_front();
       return block;
     }

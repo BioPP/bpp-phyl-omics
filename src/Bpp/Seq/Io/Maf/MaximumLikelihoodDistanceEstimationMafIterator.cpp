@@ -44,17 +44,18 @@ knowledge of the CeCILL license and that you accept its terms.
 
 using namespace bpp;
 
-DistanceMatrix* MaximumLikelihoodDistanceEstimationMafIterator::estimateDistanceMatrixForBlock(const MafBlock& block)
+unique_ptr<DistanceMatrix> MaximumLikelihoodDistanceEstimationMafIterator::estimateDistanceMatrixForBlock(const MafBlock& block)
 {
   //First we get the alignment:
-  unique_ptr<SiteContainer> sites(SiteContainerTools::removeGapSites(block.getAlignment(), propGapsToKeep_));
+  auto sites = block.getAlignment();
+  SiteContainerTools::removeGapSites(*sites, propGapsToKeep_);
   if (gapsAsUnresolved_)
     SiteContainerTools::changeGapsToUnknownCharacters(*sites);
 
   //Set the data and fit the matrix:
-  distEst_->setData(sites.get());
+  distEst_->setData(move(sites));
   ParameterList p;
-  unique_ptr<DistanceMatrix> mat(OptimizationTools::estimateDistanceMatrix(*distEst_, p, paramOpt_, verbose_));
-  return mat.release();
+  auto mat = OptimizationTools::estimateDistanceMatrix(*distEst_, p, paramOpt_, verbose_);
+  return mat;
 }
 

@@ -40,7 +40,7 @@ knowledge of the CeCILL license and that you accept its terms.
 #ifndef _OUTPUTTREEMAFITERATOR_H_
 #define _OUTPUTTREEMAFITERATOR_H_
 
-#include <Bpp/Seq/Io/Maf/MafIterator.h>
+#include <Bpp/Seq/Io/Maf/AbstractMafIterator.h>
 
 //From bpp-phyl:
 #include <Bpp/Phyl/Tree/Tree.h>
@@ -65,14 +65,22 @@ class OutputTreeMafIterator:
   public AbstractFilterMafIterator
 {
   private:
-    std::ostream* output_;
+    std::shared_ptr<std::ostream> output_;
     std::string treeProperty_;
     Newick writer_;
     bool extendedSeqNames_;
 
   public:
-    OutputTreeMafIterator(MafIterator* iterator, std::ostream* out, const std::string& treeProperty, bool extendedSeqNames = true) :
-      AbstractFilterMafIterator(iterator), output_(out), treeProperty_(treeProperty), writer_(), extendedSeqNames_(extendedSeqNames)
+    OutputTreeMafIterator(
+        std::shared_ptr<MafIteratorInterface> iterator,
+       	std::shared_ptr<std::ostream> out,
+       	const std::string& treeProperty,
+       	bool extendedSeqNames = true) :
+      AbstractFilterMafIterator(iterator),
+      output_(out),
+      treeProperty_(treeProperty),
+      writer_(),
+      extendedSeqNames_(extendedSeqNames)
     {}
 
   private:
@@ -95,11 +103,11 @@ class OutputTreeMafIterator:
 
 
   public:
-    MafBlock* analyseCurrentBlock_() {
+    std::unique_ptr<MafBlock> analyseCurrentBlock_() {
       currentBlock_ = iterator_->nextBlock();
       if (output_ && currentBlock_)
         writeBlock_(*output_, *currentBlock_);
-      return currentBlock_;
+      return move(currentBlock_);
     }
 
   private:

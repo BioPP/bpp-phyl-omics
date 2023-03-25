@@ -40,7 +40,7 @@ knowledge of the CeCILL license and that you accept its terms.
 #ifndef _ABSTRACTDISTANCEESTIMATIONMAFITERATOR_H_
 #define _ABSTRACTDISTANCEESTIMATIONMAFITERATOR_H_
 
-#include <Bpp/Seq/Io/Maf/MafIterator.h>
+#include <Bpp/Seq/Io/Maf/AbstractMafIterator.h>
 #include <Bpp/Seq/Container/SiteContainer.h>
 #include <Bpp/Phyl/Tree/Tree.h>
 #include <Bpp/Phyl/Distance/DistanceEstimation.h>
@@ -63,17 +63,19 @@ class AbstractDistanceEstimationMafIterator:
     bool addCoordinatesInSequenceNames_;
 
   public:
-    AbstractDistanceEstimationMafIterator(MafIterator* iterator, bool addCoordinatesInSequenceNames):
+    AbstractDistanceEstimationMafIterator(
+        std::shared_ptr<MafIteratorInterface> iterator,
+       	bool addCoordinatesInSequenceNames):
       AbstractFilterMafIterator(iterator),
       addCoordinatesInSequenceNames_(addCoordinatesInSequenceNames)
     {}
 
   private:
-    MafBlock* analyseCurrentBlock_()
+    std::unique_ptr<MafBlock> analyseCurrentBlock_()
     {
-      MafBlock* block = iterator_->nextBlock();
-      if (!block) return 0;
-      unique_ptr<DistanceMatrix> dist(estimateDistanceMatrixForBlock(*block));
+      auto block = iterator_->nextBlock();
+      if (!block) return nullptr;
+      auto dist = estimateDistanceMatrixForBlock(*block);
       if (!addCoordinatesInSequenceNames_) {
         for (size_t i = 0; i < dist->size(); ++i) {
           std::string name = dist->getName(i);
@@ -83,13 +85,13 @@ class AbstractDistanceEstimationMafIterator:
           }
         }
       }
-      block->setProperty(getPropertyName(), dist.release());
+      block->setProperty(getPropertyName(), move(dist));
       return block;
     }
 
   public:
     virtual std::string getPropertyName() const = 0;
-    virtual DistanceMatrix* estimateDistanceMatrixForBlock(const MafBlock& block) = 0;
+    virtual std::unique_ptr<DistanceMatrix> estimateDistanceMatrixForBlock(const MafBlock& block) = 0;
 
 };
 

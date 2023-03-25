@@ -42,27 +42,27 @@ knowledge of the CeCILL license and that you accept its terms.
 using namespace bpp;
 using namespace std;
 
-MafBlock* TreeManipulationMafIterator::analyseCurrentBlock_()
+unique_ptr<MafBlock> TreeManipulationMafIterator::analyseCurrentBlock_()
 {
   currentBlock_ = iterator_->nextBlock();
   if (currentBlock_) {
     if (!currentBlock_->hasProperty(treePropertyRead_))
       throw Exception("TreeManipulationMafIterator::analyseCurrentBlock_(). No property available for " + treePropertyRead_);
     try {
-      TreeTemplate<Node>* tree = new TreeTemplate<Node>(dynamic_cast<const Tree&>(currentBlock_->getProperty(treePropertyRead_)));
-      manipulateTree_(tree);
-      currentBlock_->setProperty(treePropertyWrite_, tree);
+      auto tree = make_unique<TreeTemplate<Node>>(dynamic_cast<const Tree&>(currentBlock_->getProperty(treePropertyRead_)));
+      manipulateTree_(*tree);
+      currentBlock_->setProperty(treePropertyWrite_, move(tree));
     } catch (bad_cast& e) {
       throw Exception("TreeManipulationMafIterator::analyseCurrentBlock_(). A property was found for '" + treePropertyRead_ + "' but does not appear to contain a phylogenetic tree.");
     }
   }
-  return currentBlock_;
+  return move(currentBlock_);
 }
 
 
-void NewOutgroupMafIterator::manipulateTree_(TreeTemplate<Node>* tree)
+void NewOutgroupMafIterator::manipulateTree_(TreeTemplate<Node>& tree)
 {
-  vector<Node*> leaves = tree->getLeaves();
+  vector<Node*> leaves = tree.getLeaves();
   Node* outgroup = 0;
   bool outgroupFound = false;
   for (size_t i = 0; i < leaves.size() && !outgroupFound; ++i) {
@@ -75,18 +75,18 @@ void NewOutgroupMafIterator::manipulateTree_(TreeTemplate<Node>* tree)
   }
   if (!outgroupFound)
     throw Exception("NewOutgroupTreeMafIterator::analyseCurrentBlock_(). No ougroup species was found in the attached tree.");
-  tree->newOutGroup(outgroup);
+  tree.newOutGroup(outgroup);
 }
 
 
-void DropSpeciesMafIterator::manipulateTree_(TreeTemplate<Node>* tree)
+void DropSpeciesMafIterator::manipulateTree_(TreeTemplate<Node>& tree)
 {
-  vector<Node*> leaves = tree->getLeaves();
+  vector<Node*> leaves = tree.getLeaves();
   for (size_t i = 0; i < leaves.size(); ++i) {
     string species, chr;
     MafSequence::splitNameIntoSpeciesAndChromosome(leaves[i]->getName(), species, chr);
     if (species == species_) {
-      TreeTemplateTools::dropSubtree(*tree, leaves[i]);
+      TreeTemplateTools::dropSubtree(tree, leaves[i]);
     }
   }
 }

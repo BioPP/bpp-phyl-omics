@@ -40,7 +40,7 @@ knowledge of the CeCILL license and that you accept its terms.
 #ifndef _OUTPUTDISTANCEMATRIXMAFITERATOR_H_
 #define _OUTPUTDISTANCEMATRIXMAFITERATOR_H_
 
-#include <Bpp/Seq/Io/Maf/MafIterator.h>
+#include <Bpp/Seq/Io/Maf/AbstractMafIterator.h>
 
 //From bpp-seq:
 #include <Bpp/Seq/DistanceMatrix.h>
@@ -57,14 +57,22 @@ class OutputDistanceMatrixMafIterator:
   public AbstractFilterMafIterator
 {
   private:
-    std::ostream* output_;
+    std::shared_ptr<std::ostream> output_;
     std::string distProperty_;
     PhylipDistanceMatrixFormat writer_;
     bool extendedSeqNames_;
 
   public:
-    OutputDistanceMatrixMafIterator(MafIterator* iterator, std::ostream* out, const std::string& distProperty, bool extendedSeqNames = true) :
-      AbstractFilterMafIterator(iterator), output_(out), distProperty_(distProperty), writer_(), extendedSeqNames_(extendedSeqNames)
+    OutputDistanceMatrixMafIterator(
+	std::shared_ptr<MafIteratorInterface> iterator,
+       	std::shared_ptr<std::ostream> out,
+       	const std::string& distProperty,
+       	bool extendedSeqNames = true) :
+      AbstractFilterMafIterator(iterator),
+      output_(out),
+      distProperty_(distProperty),
+      writer_(),
+      extendedSeqNames_(extendedSeqNames)
     {}
 
   private:
@@ -87,11 +95,11 @@ class OutputDistanceMatrixMafIterator:
 
 
   public:
-    MafBlock* analyseCurrentBlock_() {
+    std::unique_ptr<MafBlock> analyseCurrentBlock_() {
       currentBlock_ = iterator_->nextBlock();
       if (output_ && currentBlock_)
         writeBlock_(*output_, *currentBlock_);
-      return currentBlock_;
+      return move(currentBlock_);
     }
 
   private:

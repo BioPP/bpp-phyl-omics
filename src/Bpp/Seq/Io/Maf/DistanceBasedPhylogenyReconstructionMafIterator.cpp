@@ -44,7 +44,7 @@ knowledge of the CeCILL license and that you accept its terms.
 using namespace bpp;
 using namespace std;
 
-Tree* DistanceBasedPhylogenyReconstructionMafIterator::buildTreeForBlock(const MafBlock& block)
+std::unique_ptr<Tree> DistanceBasedPhylogenyReconstructionMafIterator::buildTreeForBlock(const MafBlock& block)
 {
   //First get the distance matrix for this block:
   if (!block.hasProperty(distanceProperty_))
@@ -53,12 +53,12 @@ Tree* DistanceBasedPhylogenyReconstructionMafIterator::buildTreeForBlock(const M
     const DistanceMatrix& dist = dynamic_cast<const DistanceMatrix&>(block.getProperty(distanceProperty_));
     builder_->setDistanceMatrix(dist);
     builder_->computeTree();
-    Tree* tree = builder_->getTree();
-    if (!tree)
-      throw Exception("DistanceBasedPhylogenyReconstructionMafIterator::buildTreeForBlock. Tree reconstruction failed!");
-    return tree;
+    auto& tree = builder_->tree();
+    return std::unique_ptr<Tree>(tree.clone());
   } catch (bad_cast& e) {
     throw Exception("DistanceBasedPhylogenyReconstructionMafIterator::buildTreeForBlock. A property was found for '" + distanceProperty_ + "' but does not appear to contain a distance matrix.");
+  } catch (Exception& e) {
+      throw Exception("DistanceBasedPhylogenyReconstructionMafIterator::buildTreeForBlock. Tree reconstruction failed!");
   }
 }
 

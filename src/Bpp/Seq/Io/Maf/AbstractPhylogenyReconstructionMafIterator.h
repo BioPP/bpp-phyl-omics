@@ -40,7 +40,7 @@ knowledge of the CeCILL license and that you accept its terms.
 #ifndef _ABSTRACTPHYLOGENYRECONSTRUCTIONMAFITERATOR_H_
 #define _ABSTRACTPHYLOGENYRECONSTRUCTIONMAFITERATOR_H_
 
-#include <Bpp/Seq/Io/Maf/MafIterator.h>
+#include <Bpp/Seq/Io/Maf/AbstractMafIterator.h>
 #include <Bpp/Phyl/Tree/Tree.h>
 
 namespace bpp {
@@ -56,25 +56,26 @@ class AbstractPhylogenyReconstructionMafIterator:
   public AbstractFilterMafIterator
 {
   public:
-    AbstractPhylogenyReconstructionMafIterator(MafIterator* iterator):
+    AbstractPhylogenyReconstructionMafIterator(
+        std::shared_ptr<MafIteratorInterface> iterator) :
       AbstractFilterMafIterator(iterator)
     {}
 
   virtual ~AbstractPhylogenyReconstructionMafIterator() {}
 
   private:
-    MafBlock* analyseCurrentBlock_()
+  std::unique_ptr<MafBlock> analyseCurrentBlock_()
     {
-      MafBlock* block = iterator_->nextBlock();
-      if (!block) return 0;
-      Tree* tree = buildTreeForBlock(*block);
-      block->setProperty(getPropertyName(), tree);
+      auto block = iterator_->nextBlock();
+      if (!block) return nullptr;
+      auto tree = buildTreeForBlock(*block);
+      block->setProperty(getPropertyName(), std::move(tree));
       return block;
     }
 
   public:
     virtual std::string getPropertyName() const = 0;
-    virtual Tree* buildTreeForBlock(const MafBlock& block) = 0;
+    virtual std::unique_ptr<Tree> buildTreeForBlock(const MafBlock& block) = 0;
 
 };
 

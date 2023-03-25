@@ -56,9 +56,13 @@ class DistanceBasedPhylogenyReconstructionMafIterator:
     std::unique_ptr<DistanceMethod> builder_;
   
   public:
-    DistanceBasedPhylogenyReconstructionMafIterator(MafIterator* iterator, DistanceMethod* method, const std::string& property):
+    DistanceBasedPhylogenyReconstructionMafIterator(
+        std::shared_ptr<MafIteratorInterface> iterator, 
+	std::unique_ptr<DistanceMethod> method,
+       	const std::string& property):
       AbstractPhylogenyReconstructionMafIterator(iterator),
-      distanceProperty_(property), builder_(method)
+      distanceProperty_(property),
+      builder_(std::move(method))
     {}
 
   private:
@@ -79,7 +83,7 @@ class DistanceBasedPhylogenyReconstructionMafIterator:
     const std::string& getDistanceProperty() const { return distanceProperty_; }
 
     std::string getPropertyName() const { return builder_->getName(); }
-    Tree* buildTreeForBlock(const MafBlock& block);
+    std::unique_ptr<Tree> buildTreeForBlock(const MafBlock& block);
 };
 
 } //end of namespace bpp.

@@ -55,7 +55,8 @@ const string MaximumLikelihoodModelFitMafStatistics::NO_PROPERTY = "RESERVED_NOP
 void MaximumLikelihoodModelFitMafStatistics::compute(const MafBlock& block)
 {
   //First we get the alignment:
-  unique_ptr<SiteContainer> sites(SiteContainerTools::removeGapSites(block.getAlignment(), propGapsToKeep_));
+  shared_ptr<SiteContainerInterface> sites = block.getAlignment();
+  SiteContainerTools::removeGapSites(*sites, propGapsToKeep_);
   //Update names if needed:
   if (tree_.get()) {
     sites->setSequenceNames(block.getSpeciesList(), true);
@@ -92,8 +93,8 @@ void MaximumLikelihoodModelFitMafStatistics::compute(const MafBlock& block)
 
   //We build a new TreeLikelihood object:
   Context context;
-  auto lik = std::make_shared<LikelihoodCalculationSingleProcess>(context, *sites, *process_);
-  unique_ptr<PhyloLikelihood> treeLik(new SingleProcessPhyloLikelihood(context, lik));
+  auto lik = make_shared<LikelihoodCalculationSingleProcess>(context, sites, process_);
+  auto treeLik = make_shared<SingleProcessPhyloLikelihood>(context, lik);
   
   treeLik->setParameters(fixedParameters_);
   
@@ -101,7 +102,7 @@ void MaximumLikelihoodModelFitMafStatistics::compute(const MafBlock& block)
   ParameterList initParameters = initParameters_;
   if (reestimateBrLen_)
     initParameters.addParameters(treeLik->getBranchLengthParameters());
-  unsigned int nbIt = OptimizationTools::optimizeNumericalParameters2(treeLik.get(), initParameters, 0, 0.000001, 10000, 0, 0, reparametrize_, useClock_, 0);
+  unsigned int nbIt = OptimizationTools::optimizeNumericalParameters2(treeLik, initParameters, 0, 0.000001, 10000, 0, 0, reparametrize_, useClock_, 0);
 
   //And we save interesting parameter values:
   result_.setValue("NbIterations", static_cast<double>(nbIt));

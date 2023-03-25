@@ -65,9 +65,9 @@ class MaximumLikelihoodModelFitMafStatistics:
 {
 
   private:
-    std::shared_ptr<AutonomousSubstitutionProcess> process_;
+    std::shared_ptr<AutonomousSubstitutionProcessInterface> process_;
     std::string treePropertyIn_;
-    std::unique_ptr<const TreeTemplate<Node> > tree_;
+    std::shared_ptr<const TreeTemplate<Node>> tree_;
     std::vector<std::string> parametersOut_;
     bool reestimateBrLen_;
     double propGapsToKeep_; //Exclude sites with too many gaps
@@ -94,7 +94,7 @@ class MaximumLikelihoodModelFitMafStatistics:
      * @param reparametrize Transform parameters to remove constraints.
      */
     MaximumLikelihoodModelFitMafStatistics(
-        std::shared_ptr<AutonomousSubstitutionProcess> process,
+        std::shared_ptr<AutonomousSubstitutionProcessInterface> process,
         const std::string& treePropertyIn,
         const std::vector<std::string>& parametersOut,
         const ParameterList& fixedParameters,
@@ -129,8 +129,8 @@ class MaximumLikelihoodModelFitMafStatistics:
      * @param reparametrize Transform parameters to remove constraints.
      */
     MaximumLikelihoodModelFitMafStatistics(
-        std::shared_ptr<AutonomousSubstitutionProcess> process,
-        const TreeTemplate<Node>* tree,
+        std::shared_ptr<AutonomousSubstitutionProcessInterface> process,
+        std::shared_ptr<const TreeTemplate<Node>> tree,
         const std::vector<std::string>& parametersOut,
         const ParameterList& fixedParameters,
         bool reestimateBrLen = true,

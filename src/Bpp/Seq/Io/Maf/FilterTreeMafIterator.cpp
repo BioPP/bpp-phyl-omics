@@ -42,7 +42,7 @@ knowledge of the CeCILL license and that you accept its terms.
 using namespace bpp;
 using namespace std;
 
-MafBlock* FilterTreeMafIterator::analyseCurrentBlock_()
+unique_ptr<MafBlock> FilterTreeMafIterator::analyseCurrentBlock_()
 {
   bool test = false;
   currentBlock_ = iterator_->nextBlock();
@@ -62,14 +62,14 @@ MafBlock* FilterTreeMafIterator::analyseCurrentBlock_()
       }
       if (!test) {
         if (keepTrashedBlocks_)
-          trashBuffer_.push_back(currentBlock_);
+          trashBuffer_.push_back(move(currentBlock_));
         currentBlock_ = iterator_->nextBlock();
       }
     } catch (bad_cast& e) {
       throw Exception("FilterTreeMafIterator::writeBlock. A property was found for '" + treeProperty_ + "' but does not appear to contain a phylogenetic tree.");
     }
   }
-  return currentBlock_;
+  return move(currentBlock_);
 }
 
 

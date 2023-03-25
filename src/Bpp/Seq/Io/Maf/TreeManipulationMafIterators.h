@@ -40,7 +40,7 @@ knowledge of the CeCILL license and that you accept its terms.
 #ifndef _TREEMANIPULATIONMAFITERATOR_H_
 #define _TREEMANIPULATIONMAFITERATOR_H_
 
-#include <Bpp/Seq/Io/Maf/MafIterator.h>
+#include <Bpp/Seq/Io/Maf/AbstractMafIterator.h>
 
 //From bpp-phyl:
 #include <Bpp/Phyl/Tree/TreeTemplate.h>
@@ -59,15 +59,20 @@ class TreeManipulationMafIterator:
 
   public:
     //Write can be the same as read.
-    TreeManipulationMafIterator(MafIterator* iterator, const std::string& treePropertyRead, const std::string& treePropertyWrite) :
-      AbstractFilterMafIterator(iterator), treePropertyRead_(treePropertyRead), treePropertyWrite_(treePropertyWrite)
+    TreeManipulationMafIterator(
+	std::shared_ptr<MafIteratorInterface> iterator,
+       	const std::string& treePropertyRead,
+       	const std::string& treePropertyWrite) :
+      AbstractFilterMafIterator(iterator), 
+      treePropertyRead_(treePropertyRead),
+      treePropertyWrite_(treePropertyWrite)
     {}
 
   public:
-    MafBlock* analyseCurrentBlock_();
+    std::unique_ptr<MafBlock> analyseCurrentBlock_();
 
   protected:
-    virtual void manipulateTree_(TreeTemplate<Node>* tree) = 0;
+    virtual void manipulateTree_(TreeTemplate<Node>& tree) = 0;
 
 };
 
@@ -84,12 +89,20 @@ class NewOutgroupMafIterator:
 
   public:
     //Write can be the same as read.
-    NewOutgroupMafIterator(MafIterator* iterator, const std::string& treePropertyRead, const std::string& treePropertyWrite, const std::string& outgroupSpecies) :
-      TreeManipulationMafIterator(iterator, treePropertyRead, treePropertyWrite), outgroupSpecies_(outgroupSpecies)
+    NewOutgroupMafIterator(
+        std::shared_ptr<MafIteratorInterface> iterator,
+       	const std::string& treePropertyRead,
+       	const std::string& treePropertyWrite,
+       	const std::string& outgroupSpecies) :
+      TreeManipulationMafIterator(
+          iterator,
+	  treePropertyRead, 
+	  treePropertyWrite),
+      outgroupSpecies_(outgroupSpecies)
     {}
 
   private:
-    void manipulateTree_(TreeTemplate<Node>* tree);
+    void manipulateTree_(TreeTemplate<Node>& tree) override;
 
 };
 
@@ -106,12 +119,20 @@ class DropSpeciesMafIterator:
 
   public:
     //Write can be the same as read.
-    DropSpeciesMafIterator(MafIterator* iterator, const std::string& treePropertyRead, const std::string& treePropertyWrite, const std::string& species) :
-      TreeManipulationMafIterator(iterator, treePropertyRead, treePropertyWrite), species_(species)
+    DropSpeciesMafIterator(
+	std::shared_ptr<MafIteratorInterface> iterator,
+       	const std::string& treePropertyRead,
+       	const std::string& treePropertyWrite,
+       	const std::string& species) :
+      TreeManipulationMafIterator(
+	  iterator, 
+	  treePropertyRead,
+	  treePropertyWrite),
+       	species_(species)
     {}
 
   private:
-    void manipulateTree_(TreeTemplate<Node>* tree);
+    void manipulateTree_(TreeTemplate<Node>& tree) override;
 
 };
 

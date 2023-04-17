@@ -66,8 +66,8 @@ void MaximumLikelihoodModelFitMafStatistics::compute(const MafBlock& block)
     SiteContainerTools::changeGapsToUnknownCharacters(*sites);
 
   //Second we get the tree:
-  const TreeTemplate<Node>* tree = 0;
-  if (!tree_.get()) {
+  const TreeTemplate<Node>* tree = nullptr;
+  if (!tree_) {
     //No default tree is given, we try to retrieve one from the block:
     if (!block.hasProperty(treePropertyIn_))
       throw Exception("MaximumLikelihoodModelFitMafStatistics::fitModelBlock. No property available for " + treePropertyIn_);

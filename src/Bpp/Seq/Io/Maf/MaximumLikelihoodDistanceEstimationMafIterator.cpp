@@ -49,8 +49,9 @@ unique_ptr<DistanceMatrix> MaximumLikelihoodDistanceEstimationMafIterator::estim
   //First we get the alignment:
   auto sites = block.getAlignment();
   SiteContainerTools::removeGapSites(*sites, propGapsToKeep_);
-  if (gapsAsUnresolved_)
+  if (gapsAsUnresolved_) {
     SiteContainerTools::changeGapsToUnknownCharacters(*sites);
+  }
 
   //Set the data and fit the matrix:
   distEst_->setData(move(sites));

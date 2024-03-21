@@ -8,8 +8,8 @@
 #include <Bpp/Seq/Io/Maf/AbstractMafIterator.h>
 #include <Bpp/Phyl/Tree/Tree.h>
 
-namespace bpp {
-
+namespace bpp
+{
 /**
  * @brief Partial implementation for phylogeny reconstruction iterator.
  *
@@ -17,33 +17,31 @@ namespace bpp {
  * and store the resulting tree as an associated block property for the block,
  * before forwarding it.
  */
-class AbstractPhylogenyReconstructionMafIterator:
+class AbstractPhylogenyReconstructionMafIterator :
   public AbstractFilterMafIterator
 {
-  public:
-    AbstractPhylogenyReconstructionMafIterator(
-        std::shared_ptr<MafIteratorInterface> iterator) :
-      AbstractFilterMafIterator(iterator)
-    {}
+public:
+  AbstractPhylogenyReconstructionMafIterator(
+      std::shared_ptr<MafIteratorInterface> iterator) :
+    AbstractFilterMafIterator(iterator)
+  {}
 
   virtual ~AbstractPhylogenyReconstructionMafIterator() {}
 
-  private:
+private:
   std::unique_ptr<MafBlock> analyseCurrentBlock_()
-    {
-      auto block = iterator_->nextBlock();
-      if (!block) return nullptr;
-      auto tree = buildTreeForBlock(*block);
-      block->setProperty(getPropertyName(), std::move(tree));
-      return block;
-    }
+  {
+    auto block = iterator_->nextBlock();
+    if (!block) return nullptr;
+    auto tree = buildTreeForBlock(*block);
+    block->setProperty(getPropertyName(), std::move(tree));
+    return block;
+  }
 
-  public:
-    virtual std::string getPropertyName() const = 0;
-    virtual std::unique_ptr<Tree> buildTreeForBlock(const MafBlock& block) = 0;
-
+public:
+  virtual std::string getPropertyName() const = 0;
+  virtual std::unique_ptr<Tree> buildTreeForBlock(const MafBlock& block) = 0;
 };
+} // end of namespace
 
-} //end of namespace
-
-#endif //_ABSTRACTPHYLOGENYRECONSTRUCTIONMAFITERATOR_H_
+#endif // _ABSTRACTPHYLOGENYRECONSTRUCTIONMAFITERATOR_H_

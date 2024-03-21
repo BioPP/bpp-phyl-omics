@@ -12,8 +12,8 @@
 #include <Bpp/Phyl/Distance/PGMA.h>
 #include <Bpp/Phyl/Io/Newick.h>
 
-namespace bpp  {
-
+namespace bpp
+{
 /**
  * @brief Partial implementation for distance estimation iterator.
  *
@@ -21,45 +21,46 @@ namespace bpp  {
  * and store the resulting distance matrix as an associated block property for the block,
  * before forwarding it.
  */
-class AbstractDistanceEstimationMafIterator:
+class AbstractDistanceEstimationMafIterator :
   public AbstractFilterMafIterator
 {
-  private:
-    bool addCoordinatesInSequenceNames_;
+private:
+  bool addCoordinatesInSequenceNames_;
 
-  public:
-    AbstractDistanceEstimationMafIterator(
-        std::shared_ptr<MafIteratorInterface> iterator,
-       	bool addCoordinatesInSequenceNames):
-      AbstractFilterMafIterator(iterator),
-      addCoordinatesInSequenceNames_(addCoordinatesInSequenceNames)
-    {}
+public:
+  AbstractDistanceEstimationMafIterator(
+      std::shared_ptr<MafIteratorInterface> iterator,
+      bool addCoordinatesInSequenceNames) :
+    AbstractFilterMafIterator(iterator),
+    addCoordinatesInSequenceNames_(addCoordinatesInSequenceNames)
+  {}
 
-  private:
-    std::unique_ptr<MafBlock> analyseCurrentBlock_()
+private:
+  std::unique_ptr<MafBlock> analyseCurrentBlock_()
+  {
+    auto block = iterator_->nextBlock();
+    if (!block) return nullptr;
+    auto dist = estimateDistanceMatrixForBlock(*block);
+    if (!addCoordinatesInSequenceNames_)
     {
-      auto block = iterator_->nextBlock();
-      if (!block) return nullptr;
-      auto dist = estimateDistanceMatrixForBlock(*block);
-      if (!addCoordinatesInSequenceNames_) {
-        for (size_t i = 0; i < dist->size(); ++i) {
-          std::string name = dist->getName(i);
-          size_t pos = name.find('.');
-          if (pos != std::string::npos) {
-            dist->setName(i, name.substr(0, pos));
-          }
+      for (size_t i = 0; i < dist->size(); ++i)
+      {
+        std::string name = dist->getName(i);
+        size_t pos = name.find('.');
+        if (pos != std::string::npos)
+        {
+          dist->setName(i, name.substr(0, pos));
         }
       }
-      block->setProperty(getPropertyName(), std::move(dist));
-      return block;
     }
+    block->setProperty(getPropertyName(), std::move(dist));
+    return block;
+  }
 
-  public:
-    virtual std::string getPropertyName() const = 0;
-    virtual std::unique_ptr<DistanceMatrix> estimateDistanceMatrixForBlock(const MafBlock& block) = 0;
-
+public:
+  virtual std::string getPropertyName() const = 0;
+  virtual std::unique_ptr<DistanceMatrix> estimateDistanceMatrixForBlock(const MafBlock& block) = 0;
 };
-
-} //end of namespace bpp.
+} // end of namespace bpp.
 
 #endif // _ABSTRACTDISTANCEESTIMATIONMAFITERATOR_H_

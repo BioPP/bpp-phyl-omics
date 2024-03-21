@@ -7,101 +7,94 @@
 
 #include <Bpp/Seq/Io/Maf/AbstractMafIterator.h>
 
-//From bpp-phyl:
+// From bpp-phyl:
 #include <Bpp/Phyl/Tree/TreeTemplate.h>
 
-namespace bpp {
-
+namespace bpp
+{
 /**
  * @brief This iterator root associated trees according to an outgroup sequence.
  */
-class TreeManipulationMafIterator:
+class TreeManipulationMafIterator :
   public AbstractFilterMafIterator
 {
-  private:
-    std::string treePropertyRead_;
-    std::string treePropertyWrite_;
+private:
+  std::string treePropertyRead_;
+  std::string treePropertyWrite_;
 
-  public:
-    //Write can be the same as read.
-    TreeManipulationMafIterator(
-	std::shared_ptr<MafIteratorInterface> iterator,
-       	const std::string& treePropertyRead,
-       	const std::string& treePropertyWrite) :
-      AbstractFilterMafIterator(iterator), 
-      treePropertyRead_(treePropertyRead),
-      treePropertyWrite_(treePropertyWrite)
-    {}
+public:
+  // Write can be the same as read.
+  TreeManipulationMafIterator(
+      std::shared_ptr<MafIteratorInterface> iterator,
+      const std::string& treePropertyRead,
+      const std::string& treePropertyWrite) :
+    AbstractFilterMafIterator(iterator),
+    treePropertyRead_(treePropertyRead),
+    treePropertyWrite_(treePropertyWrite)
+  {}
 
-  public:
-    std::unique_ptr<MafBlock> analyseCurrentBlock_();
+public:
+  std::unique_ptr<MafBlock> analyseCurrentBlock_();
 
-  protected:
-    virtual void manipulateTree_(TreeTemplate<Node>& tree) = 0;
-
+protected:
+  virtual void manipulateTree_(TreeTemplate<Node>& tree) = 0;
 };
-
 
 
 /**
  * @brief This iterator root associated trees according to an outgroup sequence.
  */
-class NewOutgroupMafIterator:
+class NewOutgroupMafIterator :
   public TreeManipulationMafIterator
 {
-  private:
-    std::string outgroupSpecies_;
+private:
+  std::string outgroupSpecies_;
 
-  public:
-    //Write can be the same as read.
-    NewOutgroupMafIterator(
-        std::shared_ptr<MafIteratorInterface> iterator,
-       	const std::string& treePropertyRead,
-       	const std::string& treePropertyWrite,
-       	const std::string& outgroupSpecies) :
-      TreeManipulationMafIterator(
-          iterator,
-	  treePropertyRead, 
-	  treePropertyWrite),
-      outgroupSpecies_(outgroupSpecies)
-    {}
+public:
+  // Write can be the same as read.
+  NewOutgroupMafIterator(
+      std::shared_ptr<MafIteratorInterface> iterator,
+      const std::string& treePropertyRead,
+      const std::string& treePropertyWrite,
+      const std::string& outgroupSpecies) :
+    TreeManipulationMafIterator(
+        iterator,
+        treePropertyRead,
+        treePropertyWrite),
+    outgroupSpecies_(outgroupSpecies)
+  {}
 
-  private:
-    void manipulateTree_(TreeTemplate<Node>& tree) override;
-
+private:
+  void manipulateTree_(TreeTemplate<Node>& tree) override;
 };
-
 
 
 /**
  * @brief This iterator removes leaves of a certain species in an attached tree.
  */
-class DropSpeciesMafIterator:
+class DropSpeciesMafIterator :
   public TreeManipulationMafIterator
 {
-  private:
-    std::string species_;
+private:
+  std::string species_;
 
-  public:
-    //Write can be the same as read.
-    DropSpeciesMafIterator(
-	std::shared_ptr<MafIteratorInterface> iterator,
-       	const std::string& treePropertyRead,
-       	const std::string& treePropertyWrite,
-       	const std::string& species) :
-      TreeManipulationMafIterator(
-	  iterator, 
-	  treePropertyRead,
-	  treePropertyWrite),
-       	species_(species)
-    {}
+public:
+  // Write can be the same as read.
+  DropSpeciesMafIterator(
+      std::shared_ptr<MafIteratorInterface> iterator,
+      const std::string& treePropertyRead,
+      const std::string& treePropertyWrite,
+      const std::string& species) :
+    TreeManipulationMafIterator(
+        iterator,
+        treePropertyRead,
+        treePropertyWrite),
+    species_(species)
+  {}
 
-  private:
-    void manipulateTree_(TreeTemplate<Node>& tree) override;
-
+private:
+  void manipulateTree_(TreeTemplate<Node>& tree) override;
 };
+} // end of namespace bpp.
 
-
-} //end of namespace bpp.
-
-#endif //_TREEMANIPULATIONMAFITERATOR_H_
+#endif // _TREEMANIPULATIONMAFITERATOR_H_

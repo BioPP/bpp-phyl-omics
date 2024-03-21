@@ -14,4 +14,3 @@ std::unique_ptr<DistanceMatrix> CountDistanceEstimationMafIterator::estimateDist
   auto dist = SiteContainerTools::computeSimilarityMatrix(*aln, true, gapOption_, unresolvedAsGap_);
   return dist;
 }
-

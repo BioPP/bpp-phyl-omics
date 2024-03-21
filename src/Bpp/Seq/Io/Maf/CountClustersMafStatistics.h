@@ -7,45 +7,44 @@
 
 #include <Bpp/Seq/Io/Maf/MafStatistics.h>
 
-//From bpp-phyl:
+// From bpp-phyl:
 #include <Bpp/Phyl/Tree/Node.h>
 
-//From the STL:
+// From the STL:
 #include <map>
 
-namespace bpp {
-
+namespace bpp
+{
 /**
  * @brief Count the number of sequence cluster, given a certain threshold.
  * This requires that a phylogenetic tree was previously computed.
  */
-class CountClustersMafStatistics:
+class CountClustersMafStatistics :
   public AbstractMafStatisticsSimple
 {
-  private:
-    std::string treeProperty_;
-    double threshold_;
-  
-  public:
-    CountClustersMafStatistics(const std::string& property, double threshold):
-      AbstractMafStatisticsSimple("NbClusters"),
-      treeProperty_(property), threshold_(threshold)
-    {}
+private:
+  std::string treeProperty_;
+  double threshold_;
 
-  public:
-    void setTreeProperty(const std::string& property) { treeProperty_ = property; }
-    const std::string& getTreeProperty() const { return treeProperty_; }
+public:
+  CountClustersMafStatistics(const std::string& property, double threshold) :
+    AbstractMafStatisticsSimple("NbClusters"),
+    treeProperty_(property), threshold_(threshold)
+  {}
 
-    std::string getShortName() const { return "CountClusters(" + TextTools::toString(threshold_) + ")"; }
-    std::string getFullName() const { return "Number of sequence clusters with divergence <= " + TextTools::toString(threshold_) + "."; }
-    void compute(const MafBlock& block);
+public:
+  void setTreeProperty(const std::string& property) { treeProperty_ = property; }
+  const std::string& getTreeProperty() const { return treeProperty_; }
 
-    std::string getPropertyName() const { return "CountClusters"; }
+  std::string getShortName() const { return "CountClusters(" + TextTools::toString(threshold_) + ")"; }
+  std::string getFullName() const { return "Number of sequence clusters with divergence <= " + TextTools::toString(threshold_) + "."; }
+  void compute(const MafBlock& block);
 
-  private:
-    unsigned int getNumberOfClusters_(const Node* node, std::map<const Node*, double>& heights);
+  std::string getPropertyName() const { return "CountClusters"; }
+
+private:
+  unsigned int getNumberOfClusters_(const Node* node, std::map<const Node*, double>& heights);
 };
+} // end of namespace bpp.
 
-} //end of namespace bpp.
-
-#endif //_COUNTCLUSTERSMAFSTATISTICS_H_
+#endif // _COUNTCLUSTERSMAFSTATISTICS_H_

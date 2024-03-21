@@ -9,21 +9,27 @@ using namespace std;
 
 void OutputDistanceMatrixMafIterator::writeBlock_(std::ostream& out, const MafBlock& block) const
 {
-  //First get the tree for this block:
+  // First get the tree for this block:
   if (!block.hasProperty(distProperty_))
     throw Exception("OutputDistanceMatrixMafIterator::writeBlock. No property available for " + distProperty_);
-  try {
-    if (extendedSeqNames_) {
+  try
+  {
+    if (extendedSeqNames_)
+    {
       const DistanceMatrix& mat = dynamic_cast<const DistanceMatrix&>(block.getProperty(distProperty_));
       writer_.writeDistanceMatrix(mat, out);
-    } else {
+    }
+    else
+    {
       DistanceMatrix mat(dynamic_cast<const DistanceMatrix&>(block.getProperty(distProperty_)));
       vector<string> names = mat.getNames();
       stripNames_(names);
       mat.setNames(names);
       writer_.writeDistanceMatrix(mat, out);
     }
-  } catch (bad_cast& e) {
+  }
+  catch (bad_cast& e)
+  {
     throw Exception("OutputDistanceMatrixMafIterator::writeBlock. A property was found for '" + distProperty_ + "' but does not appear to contain a distance matrix.");
   }
 
@@ -32,11 +38,12 @@ void OutputDistanceMatrixMafIterator::writeBlock_(std::ostream& out, const MafBl
 
 void OutputDistanceMatrixMafIterator::stripNames_(vector<string>& names) const
 {
-  for (vector<string>::iterator it = names.begin(); it != names.end(); ++it) {
+  for (vector<string>::iterator it = names.begin(); it != names.end(); ++it)
+  {
     size_t pos = it->find('.');
-    if (pos != string::npos) {
+    if (pos != string::npos)
+    {
       *it = it->substr(0, pos);
     }
   }
 }
-

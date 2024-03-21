@@ -1,8 +1,8 @@
-# CMake package file for Bio++ Phyl Omics
-# Authors:
-#   Francois Gindraud (2017)
-# Created: 16/03/2017
-@PACKAGE_INIT@
+# SPDX-FileCopyrightText: The Bio++ Development Group
+#
+# SPDX-License-Identifier: CECILL-2.1
+
+PACKAGE_INIT@
 
 if (NOT @PROJECT_NAME@_FOUND)
   # Deps

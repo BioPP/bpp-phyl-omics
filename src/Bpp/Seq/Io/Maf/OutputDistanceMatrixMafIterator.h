@@ -9,9 +9,7 @@
 
 // From bpp-seq:
 #include <Bpp/Seq/DistanceMatrix.h>
-
-// From bpp-phyl:
-#include <Bpp/Phyl/Io/PhylipDistanceMatrixFormat.h>
+#include <Bpp/Seq/Io/PhylipDistanceMatrixFormat.h>
 
 namespace bpp
 {

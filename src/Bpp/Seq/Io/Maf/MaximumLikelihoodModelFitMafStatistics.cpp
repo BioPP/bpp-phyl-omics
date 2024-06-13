@@ -77,7 +77,16 @@ void MaximumLikelihoodModelFitMafStatistics::compute(const MafBlock& block)
   ParameterList initParameters = initParameters_;
   if (reestimateBrLen_)
     initParameters.addParameters(treeLik->getBranchLengthParameters());
-  unsigned int nbIt = OptimizationTools::optimizeNumericalParameters2(treeLik, initParameters, 0, 0.000001, 10000, 0, 0, reparametrize_, useClock_, 0);
+  OptimizationTools::OptimizationOptions opt;
+  opt.parameters = initParameters;
+  opt.tolerance = 0.000001;
+  opt.nbEvalMax = 10000;
+  opt.messenger = nullptr;
+  opt.profiler = nullptr;
+  opt.reparametrization = reparametrize_;
+  opt.useClock = useClock_;
+  opt.verbose = 0;
+  unsigned int nbIt = OptimizationTools::optimizeNumericalParameters2(treeLik, opt);
 
   // And we save interesting parameter values:
   result_.setValue("NbIterations", static_cast<double>(nbIt));

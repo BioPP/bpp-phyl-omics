@@ -19,9 +19,16 @@ unique_ptr<DistanceMatrix> MaximumLikelihoodDistanceEstimationMafIterator::estim
     SiteContainerTools::changeGapsToUnknownCharacters(*sites);
   }
 
-  // Set the data and fit the matrix:
-  distEst_->setData(std::move(sites));
-  ParameterList p;
-  auto mat = OptimizationTools::estimateDistanceMatrix(*distEst_, p, paramOpt_, verbose_);
-  return mat;
+  // Check that there is enough data:
+  if (sites->getNumberOfSites() == 0) {
+    vector<string> names = sites->getSequenceNames();
+    auto mat = std::make_unique<DistanceMatrix>(names);
+    return mat;
+  } else {
+    // Set the data and fit the matrix:
+    distEst_->setData(std::move(sites));
+    ParameterList p;
+    auto mat = OptimizationTools::estimateDistanceMatrix(*distEst_, p, paramOpt_, verbose_);
+    return mat;
+  }
 }

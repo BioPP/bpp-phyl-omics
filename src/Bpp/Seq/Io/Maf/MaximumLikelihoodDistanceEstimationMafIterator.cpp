@@ -20,11 +20,14 @@ unique_ptr<DistanceMatrix> MaximumLikelihoodDistanceEstimationMafIterator::estim
   }
 
   // Check that there is enough data:
-  if (sites->getNumberOfSites() == 0) {
+  if (sites->getNumberOfSites() == 0)
+  {
     vector<string> names = sites->getSequenceNames();
     auto mat = std::make_unique<DistanceMatrix>(names);
     return mat;
-  } else {
+  }
+  else
+  {
     // Set the data and fit the matrix:
     distEst_->setData(std::move(sites));
     ParameterList p;

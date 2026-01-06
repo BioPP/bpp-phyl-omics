@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: CECILL-2.1
 
 cmake_minimum_required(VERSION 3.10)
-project(bpp-phyl-omics3 CXX)
+project(bpp-phyl-omics CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
